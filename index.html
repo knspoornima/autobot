@@ -205,7 +205,6 @@
             100% { transform: translateY(-6px); }
         }
 
-        /* Optics speech sync flickering */
         .eye-pulse {
             transition: filter 0.05s ease, opacity 0.05s ease;
         }
@@ -279,7 +278,6 @@
             text-align: left;
         }
 
-        /* Glitch Animation */
         .glitch-active {
             animation: glitchEffect 0.3s ease;
         }
@@ -348,12 +346,12 @@
 
         /* Back Note Text */
         .personal-note {
-            font-size: 1.15rem;
+            font-size: 1.18rem;
             line-height: 1.6;
             color: #e2e8f0;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             overflow-y: auto;
             max-height: 200px;
             padding-right: 6px;
@@ -361,8 +359,10 @@
 
         .personal-note h4 {
             font-family: 'Orbitron', sans-serif;
-            color: var(--matrix-cyan);
-            font-size: 1.05rem;
+            color: var(--gold);
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 190, 11, 0.5);
         }
 
         /* Footer Controls */
@@ -394,7 +394,6 @@
             box-shadow: 0 0 20px var(--matrix-cyan);
         }
 
-        /* Door animation triggers */
         .open-left { transform: translateX(-100%); }
         .open-right { transform: translateX(100%); }
         .dismiss-core { opacity: 0; transform: scale(2); pointer-events: none; }
@@ -405,7 +404,7 @@
             .card-face { padding: 22px 18px; }
             .hand-l { left: -16px; width: 45px; }
             .hand-r { right: -16px; width: 45px; }
-            .personal-note { font-size: 0.95rem; }
+            .personal-note { font-size: 1rem; }
         }
     </style>
 </head>
@@ -453,7 +452,7 @@
                     </linearGradient>
                 </defs>
 
-                <!-- Shoulders & Upper Chest with Glowing Circuit Traces -->
+                <!-- Shoulders & Upper Chest -->
                 <polygon points="10,150 45,95 85,95 85,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
                 <line x1="25" y1="140" x2="50" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
                 <polygon points="190,150 155,95 115,95 115,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
@@ -484,7 +483,7 @@
         <!-- 3D Flippable Card Gripped by Hands -->
         <div class="card-stage">
             
-            <!-- Left Hand with Glowing Conduits -->
+            <!-- Left Hand -->
             <svg class="mech-hand hand-l" viewBox="0 0 50 100">
                 <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
                 <line x1="10" y1="30" x2="10" y2="70" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3,2"/>
@@ -519,19 +518,19 @@
                     </div>
                 </div>
 
-                <!-- BACK: Heartfelt Brother & Manager Tribute -->
+                <!-- BACK: Sincere Brother Tribute -->
                 <div class="card-face card-back">
                     <div class="card-watermark"></div>
 
                     <div class="card-header">
                         <span>CLASSIFIED // HIGH COMMAND</span>
-                        <span style="color:var(--matrix-cyan);">BROTHER & MANAGER</span>
+                        <span style="color:var(--matrix-cyan);">BROTHER</span>
                     </div>
 
                     <div class="personal-note">
-                        <h4>"Freedom is the right of all sentient beings..."</h4>
-                        <p>Balancing being an elder brother and a team manager isn't an easy protocol. Thank you for having my back like Ironhide in the field, keeping me aligned when I start scheming like Starscream, and always shielding our squad from the heavy hits.</p>
-                        <p style="color:var(--gold); font-weight:700;">True leaders don't just command; they transform everyone around them.</p>
+                        <h4>"Autobots, transform and roll out!"</h4>
+                        <p>Having you as my brother makes every journey and challenge easier. Thank you for always having my back, guiding the way, and standing strong by my side.</p>
+                        <p style="color:var(--gold); font-weight:700;">Proud to roll out alongside you. Till all are one!</p>
                     </div>
 
                     <div class="card-footer">
@@ -542,7 +541,7 @@
 
             </div>
 
-            <!-- Right Hand with Glowing Conduits -->
+            <!-- Right Hand -->
             <svg class="mech-hand hand-r" viewBox="0 0 50 100">
                 <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
                 <line x1="10" y1="30" x2="10" y2="70" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3,2"/>
@@ -556,9 +555,7 @@
     </div>
 
     <script>
-        // ==========================================
-        // Web Audio Synthesizer (Charge, Clanks & Drone)
-        // ==========================================
+        // Web Audio Synthesizer
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let chargeOsc = null;
         let chargeGain = null;
@@ -602,16 +599,14 @@
             osc.stop(audioCtx.currentTime + 0.9);
         }
 
-        // ==========================================
-        // Hold-to-Charge Energon Logic
-        // ==========================================
+        // Hold-to-Charge Logic
         const chargeTrigger = document.getElementById('charge-trigger');
         const chargeBar = document.getElementById('charge-bar');
         const chargeStatus = document.getElementById('charge-status');
         const crest = document.getElementById('autobot-crest');
         let chargeTimer = null;
         let progress = 0;
-        const totalLength = 502; // 2 * PI * 80
+        const totalLength = 502;
 
         function beginCharge(e) {
             e.preventDefault();
@@ -650,9 +645,7 @@
         chargeTrigger.addEventListener('touchstart', beginCharge, {passive:false});
         window.addEventListener('touchend', cancelCharge);
 
-        // ==========================================
-        // Speech Synthesis & Optics Sync
-        // ==========================================
+        // Speech & Optics Sync
         let isCardFlipped = false;
 
         function setOpticsTalking(speaking) {
@@ -675,7 +668,7 @@
             if (!isCardFlipped) {
                 speechText = "I am Optimus Prime. Transmission incoming. Twinkle, twinkle, little star. How I wonder what you are. Up above the world so high, like a diamond in the sky. Till all are one.";
             } else {
-                speechText = "Freedom is the right of all sentient beings. Balancing being an elder brother and manager isn't easy. Thank you for guarding our squad and leading from the front. Till all are one.";
+                speechText = "Autobots, transform and roll out! Having you as my brother makes every journey and battle easier. Thank you for always having my back. Till all are one.";
             }
 
             const utterance = new SpeechSynthesisUtterance(speechText);
@@ -694,15 +687,12 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // ==========================================
-        // Card Flip & Glitch
-        // ==========================================
+        // Card Flip & Glitch Trigger
         function toggleCardFlip() {
             const flipper = document.getElementById('card-flipper');
             isCardFlipped = !isCardFlipped;
             flipper.classList.toggle('flipped');
 
-            // Trigger quick glitch effect
             const activeCard = isCardFlipped ? flipper.querySelector('.card-back') : flipper.querySelector('.card-front');
             activeCard.classList.add('glitch-active');
             setTimeout(() => activeCard.classList.remove('glitch-active'), 350);
@@ -710,9 +700,7 @@
             speakCurrentSide();
         }
 
-        // ==========================================
-        // Unlock Sequence
-        // ==========================================
+        // Unlock
         function unlockTerminal() {
             stopChargeSound();
             playBlastSound();
