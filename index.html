@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPTIMUS PRIME // MATRIX ARCHIVE</title>
+    <title>AUTOBOT EXPEDITION // MATRIX ARCHIVE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
@@ -13,9 +13,9 @@
             --prime-blue: #0077ff;
             --prime-red: #d90429;
             --matrix-cyan: #00f0ff;
-            --energon-glow: rgba(0, 240, 255, 0.4);
             --gold: #ffbe0b;
             --metal-bg: #05070c;
+            --card-glass: rgba(14, 22, 38, 0.95);
         }
 
         * {
@@ -39,41 +39,18 @@
             perspective: 1200px;
         }
 
-        /* 3D Cybertron Ground Grid */
-        .cyber-grid {
-            position: fixed;
-            bottom: -30vh;
-            left: -50vw;
-            width: 200vw;
-            height: 100vh;
-            background-image: 
-                linear-gradient(to right, rgba(0, 240, 255, 0.15) 1px, transparent 1px),
-                linear-gradient(to top, rgba(0, 240, 255, 0.15) 1px, transparent 1px);
-            background-size: 60px 60px;
-            transform: rotateX(75deg);
-            pointer-events: none;
-            z-index: 1;
-            mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, transparent 80%);
-            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, transparent 80%);
-            animation: gridScroll 12s linear infinite;
-        }
-
-        @keyframes gridScroll {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 60px; }
-        }
-
-        /* Ambient floating energon embers */
+        /* Ambient Sparks Canvas */
         #spark-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 2;
+            z-index: 1;
             pointer-events: none;
         }
 
+        /* Scanline Overlay */
         .scanlines {
             position: fixed;
             top: 0;
@@ -87,7 +64,99 @@
             z-index: 99;
         }
 
-        /* Heavy Blast Doors */
+        /* Screen Stage Wrapper */
+        .stage-container {
+            position: absolute;
+            width: 92vw;
+            max-width: 780px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hidden-stage {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.92);
+            position: absolute;
+        }
+
+        /* General HUD Buttons */
+        .hud-btn {
+            background: rgba(0, 119, 255, 0.2);
+            border: 1px solid var(--matrix-cyan);
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+            transition: all 0.2s;
+            margin-top: 15px;
+        }
+        .hud-btn:hover {
+            background: var(--matrix-cyan);
+            color: #000;
+            box-shadow: 0 0 25px var(--matrix-cyan);
+        }
+        .hud-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        /* ============================================================ */
+        /* STAGE 1: SIGNAL FREQUENCY TUNER */
+        /* ============================================================ */
+        .tuner-box {
+            background: var(--card-glass);
+            border: 2px solid var(--matrix-cyan);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
+        }
+
+        .freq-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--gold);
+            margin: 15px 0;
+        }
+
+        .slider-wrapper {
+            margin: 25px 0;
+            width: 100%;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 240, 255, 0.2);
+            border-radius: 5px;
+            outline: none;
+            border: 1px solid var(--matrix-cyan);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            background: var(--matrix-cyan);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--matrix-cyan);
+        }
+
+        /* Blast Doors */
         .door {
             position: fixed;
             top: 0;
@@ -102,7 +171,6 @@
         }
         #door-left { left: 0; }
         #door-right { right: 0; border-right: none; border-left: 3px solid var(--prime-blue); }
-
         .hazard-stripe {
             position: absolute;
             bottom: 0;
@@ -110,119 +178,179 @@
             height: 14px;
             background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 15px, #111 15px, #111 30px);
         }
+        .open-left { transform: translateX(-100%); }
+        .open-right { transform: translateX(100%); }
 
-        /* Hold to Charge Unlock Core */
-        #unlock-core {
-            position: fixed;
-            z-index: 60;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            text-align: center;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .charge-ring-container {
+        /* ============================================================ */
+        /* STAGE 2: TACTICAL STAR MAP */
+        /* ============================================================ */
+        .star-map-box {
+            background: var(--card-glass);
+            border: 2px solid var(--matrix-cyan);
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
             position: relative;
-            width: 180px;
-            height: 180px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        .charge-svg {
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+
+        .star-canvas-area {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            border: 1px dashed rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            background: radial-gradient(circle, rgba(0, 119, 255, 0.1) 10%, transparent 80%);
+            overflow: hidden;
+        }
+
+        .beacon {
             position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--matrix-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            animation: beaconPulse 2s infinite;
+            transform: translate(-50%, -50%);
+        }
+        .beacon.collected {
+            border-color: var(--gold);
+            background: rgba(255, 190, 11, 0.3);
+        }
+        .beacon span { font-size: 0.75rem; font-weight: bold; color: #fff; }
+
+        @keyframes beaconPulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 240, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+        }
+
+        /* Modal Dialog */
+        .modal-overlay {
+            position: fixed;
             top: 0;
             left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content {
+            background: #0d1522;
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            padding: 26px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 35px rgba(255, 190, 11, 0.3);
+        }
+
+        /* ============================================================ */
+        /* STAGE 3: VECTOR SIGMA QUIZ */
+        /* ============================================================ */
+        .quiz-box {
+            background: var(--card-glass);
+            border: 2px solid var(--matrix-cyan);
+            border-radius: 12px;
+            padding: 30px;
             width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
+            text-align: center;
         }
 
-        .charge-bg-circle {
-            fill: none;
-            stroke: rgba(0, 240, 255, 0.15);
-            stroke-width: 6;
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
         }
 
-        .charge-fill-circle {
-            fill: none;
-            stroke: var(--matrix-cyan);
-            stroke-width: 6;
-            stroke-dasharray: 502;
-            stroke-dashoffset: 502;
-            stroke-linecap: round;
-            filter: drop-shadow(0 0 10px var(--matrix-cyan));
-            transition: stroke-dashoffset 0.1s linear;
+        .option-btn {
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: 6px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            background: rgba(0, 240, 255, 0.25);
+            border-color: var(--matrix-cyan);
+            transform: translateX(6px);
         }
 
-        #autobot-crest {
-            width: 90px;
-            height: 90px;
-            background-color: var(--matrix-cyan);
-            mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
-            -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
-            filter: drop-shadow(0 0 16px var(--matrix-cyan));
-            transition: transform 0.2s;
+        /* ============================================================ */
+        /* STAGE 4: MATRIX OF LEADERSHIP UNLATCH */
+        /* ============================================================ */
+        .matrix-unlatch-box {
+            text-align: center;
         }
-
-        /* 3D Scene Wrapper */
-        #optimus-scene {
+        .matrix-core-artifact {
+            width: 220px;
+            height: 140px;
+            margin: 20px auto;
             position: relative;
-            z-index: 10;
-            width: 92vw;
-            max-width: 720px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .matrix-core-artifact:hover {
+            transform: scale(1.05);
+        }
+
+        /* ============================================================ */
+        /* STAGE 5: OPTIMUS & CARD */
+        /* ============================================================ */
+        .optimus-scene {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
             transform-style: preserve-3d;
             transition: transform 0.2s ease-out;
-            opacity: 0;
-            transform: scale(0.85);
-            transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s;
         }
 
-        #optimus-scene.revealed {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Optimus Prime Bust */
         .optimus-head-wrapper {
-            position: relative;
-            width: 250px;
-            height: 175px;
+            width: 240px;
+            height: 170px;
             margin-bottom: -32px;
             z-index: 5;
             filter: drop-shadow(0 0 25px rgba(0, 119, 255, 0.5));
             animation: floatPrime 4s ease-in-out infinite alternate;
         }
+        @keyframes floatPrime { 0% { transform: translateY(0); } 100% { transform: translateY(-6px); } }
 
-        @keyframes floatPrime {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-6px); }
-        }
-
-        .eye-pulse {
-            transition: filter 0.05s ease, opacity 0.05s ease;
-        }
-
-        .speaking-optics {
-            animation: opticFlicker 0.12s infinite alternate;
-        }
-
+        .speaking-optics { animation: opticFlicker 0.12s infinite alternate; }
         @keyframes opticFlicker {
             0% { opacity: 0.4; filter: drop-shadow(0 0 2px #00f0ff); }
             100% { opacity: 1; filter: drop-shadow(0 0 12px #fff); }
         }
 
-        /* Card 3D Flip System */
         .card-stage {
             position: relative;
             width: 100%;
-            z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -237,7 +365,6 @@
             filter: drop-shadow(0 0 14px rgba(0, 119, 255, 0.7));
             pointer-events: none;
         }
-
         .hand-l { left: -26px; }
         .hand-r { right: -26px; transform: scaleX(-1); }
 
@@ -247,28 +374,21 @@
             transform-style: preserve-3d;
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .card-flipper.flipped {
-            transform: rotateY(180deg);
-        }
+        .card-flipper.flipped { transform: rotateY(180deg); }
 
         .card-face {
             width: 100%;
-            background: linear-gradient(165deg, rgba(14, 22, 38, 0.95) 0%, rgba(6, 10, 18, 0.95) 100%);
+            background: var(--card-glass);
             border: 2px solid var(--matrix-cyan);
             border-radius: 12px;
-            box-shadow: 0 0 45px rgba(0, 240, 255, 0.25), inset 0 0 30px rgba(0, 240, 255, 0.08);
-            backdrop-filter: blur(14px);
-            padding: 34px 44px;
+            box-shadow: 0 0 45px rgba(0, 240, 255, 0.25);
+            padding: 32px 38px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 16px;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            position: relative;
-            overflow: hidden;
         }
-
         .card-back {
             position: absolute;
             top: 0;
@@ -278,374 +398,454 @@
             text-align: left;
         }
 
-        .glitch-active {
-            animation: glitchEffect 0.3s ease;
-        }
-
-        @keyframes glitchEffect {
-            0% { transform: translate(0); }
-            20% { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
-            40% { transform: translate(3px, -2px); filter: invert(0.2); }
-            60% { transform: translate(-2px, -1px); }
-            80% { transform: translate(2px, 1px); }
-            100% { transform: translate(0); }
-        }
-
-        .card-watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 250px;
-            height: 250px;
-            background-color: var(--matrix-cyan);
-            mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
-            -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
-            opacity: 0.05;
-            pointer-events: none;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-            padding-bottom: 10px;
-        }
-
-        .card-header span {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            color: var(--matrix-cyan);
-        }
-
-        /* Front Poem Text */
-        .poem-container {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 8px 0;
-        }
-
         .poem-line {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.45rem;
+            font-size: 1.35rem;
             font-weight: 800;
             letter-spacing: 1.5px;
-            color: #ffffff;
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
             line-height: 1.4;
+            text-align: center;
         }
+        .poem-highlight { color: var(--gold); text-shadow: 0 0 12px rgba(255, 190, 11, 0.7); }
 
-        .poem-highlight {
-            color: var(--gold);
-            text-shadow: 0 0 12px rgba(255, 190, 11, 0.7);
-        }
-
-        /* Back Note Text */
         .personal-note {
-            font-size: 1.18rem;
+            font-size: 1.15rem;
             line-height: 1.6;
             color: #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-            max-height: 200px;
-            padding-right: 6px;
         }
-
         .personal-note h4 {
             font-family: 'Orbitron', sans-serif;
             color: var(--gold);
             font-size: 1.1rem;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(255, 190, 11, 0.5);
+            margin-bottom: 8px;
         }
 
-        /* Footer Controls */
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px dashed rgba(0, 240, 255, 0.3);
-            padding-top: 14px;
+        /* Shutdown Animation */
+        .shutdown {
+            animation: crtShutdown 0.6s forwards;
         }
-
-        .action-btn {
-            background: rgba(0, 119, 255, 0.2);
-            border: 1px solid var(--matrix-cyan);
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            cursor: pointer;
-            letter-spacing: 1px;
-            box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
-            transition: all 0.2s;
+        @keyframes crtShutdown {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scaleY(0.01) scaleX(1.1); filter: brightness(5); }
+            100% { transform: scale(0); opacity: 0; }
         }
-
-        .action-btn:hover {
-            background: var(--matrix-cyan);
-            color: #000;
-            box-shadow: 0 0 20px var(--matrix-cyan);
-        }
-
-        .open-left { transform: translateX(-100%); }
-        .open-right { transform: translateX(100%); }
-        .dismiss-core { opacity: 0; transform: scale(2); pointer-events: none; }
 
         @media (max-width: 600px) {
-            .poem-line { font-size: 1.1rem; }
-            .optimus-head-wrapper { width: 190px; height: 140px; margin-bottom: -25px; }
+            .poem-line { font-size: 1.05rem; }
             .card-face { padding: 22px 18px; }
             .hand-l { left: -16px; width: 45px; }
             .hand-r { right: -16px; width: 45px; }
-            .personal-note { font-size: 1rem; }
+            .optimus-head-wrapper { width: 190px; height: 140px; margin-bottom: -25px; }
         }
     </style>
 </head>
 <body id="screen-body">
 
     <div class="scanlines"></div>
-    <div class="cyber-grid"></div>
     <canvas id="spark-canvas"></canvas>
 
     <!-- Heavy Blast Doors -->
     <div id="door-left" class="door"><div class="hazard-stripe"></div></div>
     <div id="door-right" class="door"><div class="hazard-stripe"></div></div>
 
-    <!-- Hold to Charge Core -->
-    <div id="unlock-core">
-        <div class="charge-ring-container" id="charge-trigger">
-            <svg class="charge-svg" viewBox="0 0 180 180">
-                <circle class="charge-bg-circle" cx="90" cy="90" r="80"></circle>
-                <circle class="charge-fill-circle" id="charge-bar" cx="90" cy="90" r="80"></circle>
-            </svg>
-            <div id="autobot-crest"></div>
+    <!-- ============================================================ -->
+    <!-- STAGE 1: SIGNAL FREQUENCY TUNER (ACTIVITY 1) -->
+    <!-- ============================================================ -->
+    <div id="stage-1" class="stage-container">
+        <div class="tuner-box">
+            <h2 style="font-family:'Orbitron'; letter-spacing:2px; color:var(--matrix-cyan);">COMM CHANNEL JAMMED</h2>
+            <p style="margin-top:6px; opacity:0.8;">Decepticon interference detected. Align tuner to target frequency: <strong>84.0 MHz</strong></p>
+            
+            <div class="freq-display" id="freq-val">80.0 <span style="font-size:1.2rem;">MHz</span></div>
+            
+            <div class="slider-wrapper">
+                <input type="range" id="freq-slider" min="80.0" max="90.0" step="0.1" value="80.0" oninput="tuneFrequency(this.value)">
+            </div>
+
+            <p id="lock-hint" style="color:var(--gold); font-size:0.9rem;">[ SLIDE TO MATCH FREQUENCY ]</p>
+            <button id="stage1-btn" class="hud-btn" disabled onclick="unlockStage1()">INITIATE SPACE BRIDGE</button>
         </div>
-        <h2 style="font-family:'Orbitron'; font-size:1.1rem; margin-top:18px; letter-spacing:3px;">ENERGON PROTOCOL</h2>
-        <p id="charge-status" style="font-size:0.85rem; opacity:0.85; margin-top:6px; color:var(--matrix-cyan);">[ PRESS & HOLD TO CHARGE MATRIX ]</p>
     </div>
 
-    <!-- The 3D Optimus Scene -->
-    <div id="optimus-scene">
-        
-        <!-- Optimus Prime Bust SVG -->
-        <div class="optimus-head-wrapper">
-            <svg viewBox="0 0 200 150" width="100%" height="100%">
-                <defs>
-                    <linearGradient id="primeBlue" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#0066cc"/>
-                        <stop offset="100%" stop-color="#002b66"/>
-                    </linearGradient>
-                    <linearGradient id="primeRed" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#e61919"/>
-                        <stop offset="100%" stop-color="#800000"/>
-                    </linearGradient>
-                    <linearGradient id="windowGlow" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#00f0ff"/>
-                        <stop offset="100%" stop-color="#005577"/>
-                    </linearGradient>
-                </defs>
+    <!-- ============================================================ -->
+    <!-- STAGE 2: TACTICAL STAR MAP (ACTIVITY 2) -->
+    <!-- ============================================================ -->
+    <div id="stage-2" class="stage-container hidden-stage">
+        <div class="star-map-box">
+            <div class="map-header">
+                <span style="font-family:'Orbitron'; font-size:0.9rem; color:var(--matrix-cyan);">TACTICAL STAR MAP // SECTOR ALPHA</span>
+                <span style="font-family:'Orbitron'; font-size:0.9rem; color:var(--gold);">ENERGON: <span id="core-count">0</span> / 4</span>
+            </div>
 
-                <!-- Shoulders & Upper Chest -->
-                <polygon points="10,150 45,95 85,95 85,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
-                <line x1="25" y1="140" x2="50" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
-                <polygon points="190,150 155,95 115,95 115,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
-                <line x1="175" y1="140" x2="150" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
-                
-                <!-- Chest Windows -->
-                <rect x="52" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
-                <rect x="106" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
-                <rect x="92" y="125" width="16" height="25" fill="#333" stroke="#888" stroke-width="1"/>
+            <p style="font-size:0.85rem; opacity:0.8; margin-bottom:12px;">Tap all 4 coordinate beacons to retrieve shared memory files and harvest energon cores:</p>
 
-                <!-- Helmet & Head Fins -->
-                <polygon points="62,15 72,55 60,65 52,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
-                <polygon points="138,15 128,55 140,65 148,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
-                <polygon points="95,10 105,10 102,40 98,40" fill="#00aaff"/>
-                <rect x="70" y="32" width="60" height="38" rx="4" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="2"/>
+            <div class="star-canvas-area">
+                <!-- 4 Interactive Beacons -->
+                <div class="beacon" style="top:25%; left:20%;" onclick="openMemory(0)"><span>1</span></div>
+                <div class="beacon" style="top:70%; left:35%;" onclick="openMemory(1)"><span>2</span></div>
+                <div class="beacon" style="top:30%; left:75%;" onclick="openMemory(2)"><span>3</span></div>
+                <div class="beacon" style="top:75%; left:80%;" onclick="openMemory(3)"><span>4</span></div>
+            </div>
 
-                <!-- Speech-Synced Glowing Optics -->
-                <rect id="optics-l" class="eye-pulse" x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
-                <rect id="optics-r" class="eye-pulse" x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
-
-                <!-- Silver Mouthplate -->
-                <polygon points="82,58 118,58 112,82 88,82" fill="#cbd5e1" stroke="#fff" stroke-width="1.5"/>
-                <line x1="90" y1="68" x2="110" y2="68" stroke="#64748b" stroke-width="2"/>
-                <line x1="94" y1="74" x2="106" y2="74" stroke="#64748b" stroke-width="2"/>
-            </svg>
+            <div style="text-align:center; margin-top:14px;">
+                <button id="stage2-btn" class="hud-btn" disabled onclick="goToStage3()">ENGAGE VECTOR SIGMA CALIBRATION</button>
+            </div>
         </div>
+    </div>
 
-        <!-- 3D Flippable Card Gripped by Hands -->
-        <div class="card-stage">
+    <!-- Memory Modal -->
+    <div id="memory-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title" style="font-family:'Orbitron'; color:var(--gold); margin-bottom:10px;"></h3>
+            <p id="modal-desc" style="font-size:1.1rem; line-height:1.6; margin-bottom:20px; color:#e2e8f0;"></p>
+            <button class="hud-btn" onclick="collectCore()">EXTRACT ENERGON CORE</button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STAGE 3: VECTOR SIGMA SPARK QUIZ (ACTIVITY 3) -->
+    <!-- ============================================================ -->
+    <div id="stage-3" class="stage-container hidden-stage">
+        <div class="quiz-box">
+            <span style="font-family:'Orbitron'; font-size:0.8rem; color:var(--gold);">VECTOR SIGMA SPARK CALIBRATION</span>
+            <h3 id="quiz-question" style="font-family:'Orbitron'; font-size:1.2rem; margin:16px 0; color:var(--matrix-cyan);"></h3>
             
-            <!-- Left Hand -->
-            <svg class="mech-hand hand-l" viewBox="0 0 50 100">
-                <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
-                <line x1="10" y1="30" x2="10" y2="70" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3,2"/>
-                <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-                <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-                <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-                <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-            </svg>
+            <div class="quiz-options" id="quiz-options"></div>
+            <div id="quiz-status" style="font-size:0.9rem; color:var(--gold);"></div>
+        </div>
+    </div>
 
-            <!-- Card Flipper (Holds Front & Back) -->
-            <div class="card-flipper" id="card-flipper">
+    <!-- ============================================================ -->
+    <!-- STAGE 4: MATRIX OF LEADERSHIP UNLATCH (ACTIVITY 4) -->
+    <!-- ============================================================ -->
+    <div id="stage-4" class="stage-container hidden-stage">
+        <div class="matrix-unlatch-box">
+            <h2 style="font-family:'Orbitron'; color:var(--gold); letter-spacing:2px;">THE MATRIX OF LEADERSHIP</h2>
+            <p style="margin:8px 0 20px; opacity:0.85;">Hold and release the Matrix core to channel the Spark of Primus:</p>
+
+            <div class="matrix-core-artifact" onclick="openMatrix()" title="Click to Unleash Matrix">
+                <svg viewBox="0 0 200 130" width="100%" height="100%">
+                    <!-- Outer Handles -->
+                    <path d="M 30,65 C 10,20 10,110 30,65" fill="none" stroke="#ffbe0b" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M 170,65 C 190,20 190,110 170,65" fill="none" stroke="#ffbe0b" stroke-width="8" stroke-linecap="round"/>
+                    <!-- Matrix Housing -->
+                    <ellipse cx="100" cy="65" rx="60" ry="38" fill="#1e293b" stroke="#ffbe0b" stroke-width="4"/>
+                    <!-- Crystal Core -->
+                    <circle cx="100" cy="65" r="24" fill="#00f0ff" filter="drop-shadow(0 0 15px #00f0ff)"/>
+                </svg>
+            </div>
+
+            <button class="hud-btn" onclick="openMatrix()">UNLEASH THE MATRIX</button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- STAGE 5: OPTIMUS TRANSMISSION & CARD (STAGE 5) -->
+    <!-- ============================================================ -->
+    <div id="stage-5" class="stage-container hidden-stage">
+        <div class="optimus-scene" id="optimus-scene">
+            
+            <!-- Optimus Prime Bust SVG -->
+            <div class="optimus-head-wrapper">
+                <svg viewBox="0 0 200 150" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="primeBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0066cc"/><stop offset="100%" stop-color="#002b66"/></linearGradient>
+                        <linearGradient id="primeRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e61919"/><stop offset="100%" stop-color="#800000"/></linearGradient>
+                        <linearGradient id="windowGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00f0ff"/><stop offset="100%" stop-color="#005577"/></linearGradient>
+                    </defs>
+
+                    <!-- Shoulders -->
+                    <polygon points="10,150 45,95 85,95 85,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
+                    <line x1="25" y1="140" x2="50" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    <polygon points="190,150 155,95 115,95 115,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
+                    <line x1="175" y1="140" x2="150" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    
+                    <!-- Windows -->
+                    <rect x="52" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
+                    <rect x="106" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
+
+                    <!-- Head & Crest -->
+                    <polygon points="62,15 72,55 60,65 52,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
+                    <polygon points="138,15 128,55 140,65 148,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
+                    <polygon points="95,10 105,10 102,40 98,40" fill="#00aaff"/>
+                    <rect x="70" y="32" width="60" height="38" rx="4" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="2"/>
+
+                    <!-- Optics -->
+                    <rect id="optics-l" x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
+                    <rect id="optics-r" x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
+
+                    <!-- Mouthplate -->
+                    <polygon points="82,58 118,58 112,82 88,82" fill="#cbd5e1" stroke="#fff" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <!-- Card Stage Gripped by Hands -->
+            <div class="card-stage">
                 
-                <!-- FRONT: Celestial Star Poem -->
-                <div class="card-face card-front">
-                    <div class="card-watermark"></div>
+                <!-- Left Hand -->
+                <svg class="mech-hand hand-l" viewBox="0 0 50 100">
+                    <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
+                    <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                </svg>
 
-                    <div class="card-header">
-                        <span>TRANSMISSION // SECTOR 7</span>
-                        <span style="color:var(--gold);">CELESTIAL BEACON</span>
+                <!-- Flippable Card -->
+                <div class="card-flipper" id="card-flipper">
+                    
+                    <!-- FRONT: Poem -->
+                    <div class="card-face card-front">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(0,240,255,0.3); padding-bottom:8px;">
+                            <span style="font-family:'Orbitron'; font-size:0.85rem; color:var(--matrix-cyan);">CELESTIAL BEACON</span>
+                            <span style="color:var(--gold); font-size:0.85rem;">SECTOR 7</span>
+                        </div>
+
+                        <div style="margin:12px 0;">
+                            <p class="poem-line">Twinkle, twinkle, little star,</p>
+                            <p class="poem-line poem-highlight">How I wonder what you are!</p>
+                            <p class="poem-line">Up above the world so high,</p>
+                            <p class="poem-line poem-highlight">Like a diamond in the sky.</p>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed rgba(0,240,255,0.3); padding-top:12px;">
+                            <button class="hud-btn" style="margin:0; font-size:0.75rem;" onclick="toggleCardFlip()">🔄 FLIP: PERSONAL ARCHIVE</button>
+                            <button class="hud-btn" style="margin:0; font-size:0.75rem;" onclick="speakCurrentSide()">🔊 VOICE</button>
+                        </div>
                     </div>
 
-                    <div class="poem-container">
-                        <p class="poem-line">Twinkle, twinkle, little star,</p>
-                        <p class="poem-line poem-highlight">How I wonder what you are!</p>
-                        <p class="poem-line">Up above the world so high,</p>
-                        <p class="poem-line poem-highlight">Like a diamond in the sky.</p>
+                    <!-- BACK: Personal Note -->
+                    <div class="card-face card-back">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(0,240,255,0.3); padding-bottom:8px;">
+                            <span style="font-family:'Orbitron'; font-size:0.85rem; color:var(--matrix-cyan);">CLASSIFIED TRANSMISSION</span>
+                            <span style="color:var(--matrix-cyan); font-family:'Orbitron'; font-size:0.85rem;">BROTHER</span>
+                        </div>
+
+                        <div class="personal-note" style="margin:10px 0;">
+                            <h4>"Autobots, transform and roll out!"</h4>
+                            <p>Having you as my brother makes every journey and challenge easier. Thank you for always having my back, guiding the way, and standing strong by my side.</p>
+                            <p style="color:var(--gold); font-weight:700; margin-top:8px;">Proud to roll out alongside you. Till all are one!</p>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed rgba(0,240,255,0.3); padding-top:12px;">
+                            <button class="hud-btn" style="margin:0; font-size:0.75rem;" onclick="toggleCardFlip()">🔄 FLIP: CELESTIAL BEACON</button>
+                            <button class="hud-btn" style="margin:0; font-size:0.75rem;" onclick="speakCurrentSide()">🔊 VOICE</button>
+                        </div>
                     </div>
 
-                    <div class="card-footer">
-                        <button class="action-btn" onclick="toggleCardFlip()">🔄 FLIP: PERSONAL ARCHIVE</button>
-                        <button class="action-btn" onclick="speakCurrentSide()">🔊 VOICE</button>
-                    </div>
                 </div>
 
-                <!-- BACK: Sincere Brother Tribute -->
-                <div class="card-face card-back">
-                    <div class="card-watermark"></div>
-
-                    <div class="card-header">
-                        <span>CLASSIFIED // HIGH COMMAND</span>
-                        <span style="color:var(--matrix-cyan);">BROTHER</span>
-                    </div>
-
-                    <div class="personal-note">
-                        <h4>"Autobots, transform and roll out!"</h4>
-                        <p>Having you as my brother makes every journey and challenge easier. Thank you for always having my back, guiding the way, and standing strong by my side.</p>
-                        <p style="color:var(--gold); font-weight:700;">Proud to roll out alongside you. Till all are one!</p>
-                    </div>
-
-                    <div class="card-footer">
-                        <button class="action-btn" onclick="toggleCardFlip()">🔄 FLIP: CELESTIAL BEACON</button>
-                        <button class="action-btn" onclick="speakCurrentSide()">🔊 VOICE</button>
-                    </div>
-                </div>
+                <!-- Right Hand -->
+                <svg class="mech-hand hand-r" viewBox="0 0 50 100">
+                    <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
+                    <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                </svg>
 
             </div>
 
-            <!-- Right Hand -->
-            <svg class="mech-hand hand-r" viewBox="0 0 50 100">
-                <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
-                <line x1="10" y1="30" x2="10" y2="70" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3,2"/>
-                <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-                <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-                <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-                <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
-            </svg>
-
+            <!-- Sign-Off Button (Equivalent to Mischief Managed) -->
+            <button class="hud-btn" style="border-color:#ff4444; color:#ff8888; margin-top:20px;" onclick="terminateTransmission()">⚡ TERMINATE UPLINK</button>
         </div>
     </div>
 
+    <!-- Final Shutdown Display -->
+    <div id="final-screen" class="stage-container hidden-stage" style="text-align:center;">
+        <h2 style="font-family:'Orbitron'; letter-spacing:3px; color:var(--matrix-cyan);">TRANSMISSION TERMINATED</h2>
+        <p style="color:var(--gold); margin-top:12px; font-family:'Orbitron';">TILL ALL ARE ONE.</p>
+    </div>
+
     <script>
-        // Web Audio Synthesizer
+        // ==========================================
+        // Web Audio Synthesizer (Pure Browser Audio)
+        // ==========================================
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        let chargeOsc = null;
-        let chargeGain = null;
 
-        function startChargeSound() {
+        function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            chargeOsc = audioCtx.createOscillator();
-            chargeGain = audioCtx.createGain();
-            chargeOsc.type = 'sawtooth';
-            chargeOsc.frequency.setValueAtTime(80, audioCtx.currentTime);
-            chargeOsc.frequency.exponentialRampToValueAtTime(650, audioCtx.currentTime + 1.5);
-            chargeGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
-            chargeGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 1.5);
-            chargeOsc.connect(chargeGain);
-            chargeGain.connect(audioCtx.destination);
-            chargeOsc.start();
-        }
-
-        function stopChargeSound() {
-            if (chargeOsc) {
-                try {
-                    chargeGain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                    chargeOsc.stop(audioCtx.currentTime + 0.1);
-                } catch(e) {}
-                chargeOsc = null;
-            }
-        }
-
-        function playBlastSound() {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(140, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(850, audioCtx.currentTime + 0.25);
-            osc.frequency.exponentialRampToValueAtTime(45, audioCtx.currentTime + 0.9);
-            gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.9);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.9);
-        }
 
-        // Hold-to-Charge Logic
-        const chargeTrigger = document.getElementById('charge-trigger');
-        const chargeBar = document.getElementById('charge-bar');
-        const chargeStatus = document.getElementById('charge-status');
-        const crest = document.getElementById('autobot-crest');
-        let chargeTimer = null;
-        let progress = 0;
-        const totalLength = 502;
-
-        function beginCharge(e) {
-            e.preventDefault();
-            startChargeSound();
-            chargeStatus.innerText = "CHARGING MATRIX OF LEADERSHIP...";
-            chargeStatus.style.color = "#ffbe0b";
-            crest.style.transform = "scale(1.15)";
-
-            const startTime = Date.now();
-            chargeTimer = setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                progress = Math.min(elapsed / 1500, 1);
-                chargeBar.style.strokeDashoffset = totalLength - (totalLength * progress);
-
-                if (progress >= 1) {
-                    clearInterval(chargeTimer);
-                    unlockTerminal();
-                }
-            }, 20);
-        }
-
-        function cancelCharge() {
-            if (progress < 1) {
-                clearInterval(chargeTimer);
-                stopChargeSound();
-                progress = 0;
-                chargeBar.style.strokeDashoffset = totalLength;
-                chargeStatus.innerText = "[ PRESS & HOLD TO CHARGE MATRIX ]";
-                chargeStatus.style.color = "var(--matrix-cyan)";
-                crest.style.transform = "scale(1)";
+            if (type === 'lock') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'door') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.9);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.9);
+            } else if (type === 'chime') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1046.5, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
             }
         }
 
-        chargeTrigger.addEventListener('mousedown', beginCharge);
-        window.addEventListener('mouseup', cancelCharge);
-        chargeTrigger.addEventListener('touchstart', beginCharge, {passive:false});
-        window.addEventListener('touchend', cancelCharge);
+        // ==========================================
+        // STAGE 1: Frequency Tuner Logic
+        // ==========================================
+        function tuneFrequency(val) {
+            document.getElementById('freq-val').innerHTML = `${parseFloat(val).toFixed(1)} <span style="font-size:1.2rem;">MHz</span>`;
+            if (Math.abs(val - 84.0) < 0.25) {
+                document.getElementById('lock-hint').innerText = "SIGNAL LOCKED // AUTOBOT FREQUENCY VERIFIED";
+                document.getElementById('lock-hint').style.color = "#00f0ff";
+                document.getElementById('stage1-btn').disabled = false;
+                playSound('lock');
+            } else {
+                document.getElementById('lock-hint').innerText = "[ SLIDE TO MATCH 84.0 MHz ]";
+                document.getElementById('lock-hint').style.color = "var(--gold)";
+                document.getElementById('stage1-btn').disabled = true;
+            }
+        }
 
-        // Speech & Optics Sync
+        function unlockStage1() {
+            playSound('door');
+            document.getElementById('door-left').classList.add('open-left');
+            document.getElementById('door-right').classList.add('open-right');
+
+            setTimeout(() => {
+                document.getElementById('stage-1').classList.add('hidden-stage');
+                document.getElementById('stage-2').classList.remove('hidden-stage');
+            }, 700);
+        }
+
+        // ==========================================
+        // STAGE 2: Star Map & Memory Logs
+        // ==========================================
+        const memoryData = [
+            { title: "ORIGIN COORDINATES", desc: "Where the journey began. Navigating childhood, growing up together, and forming an unbreakable bond." },
+            { title: "THE CRUCIBLE SECTOR", desc: "Every time heavy challenges arose, you stood strong as the shield and guided our path through the storm." },
+            { title: "OFF-DUTY SECTOR", desc: "All the laughs, shared inside jokes, and daily banter that make our squad truly one of a kind." },
+            { title: "CURRENT ORBIT", desc: "Standing together today—stronger than ever, ready for whatever mission comes next across the stars." }
+        ];
+
+        let collectedCores = 0;
+        let currentMemoryIdx = null;
+        const visitedBeacons = [false, false, false, false];
+
+        function openMemory(index) {
+            currentMemoryIdx = index;
+            document.getElementById('modal-title').innerText = memoryData[index].title;
+            document.getElementById('modal-desc').innerText = memoryData[index].desc;
+            document.getElementById('memory-modal').classList.add('active');
+        }
+
+        function collectCore() {
+            document.getElementById('memory-modal').classList.remove('active');
+            if (!visitedBeacons[currentMemoryIdx]) {
+                visitedBeacons[currentMemoryIdx] = true;
+                collectedCores++;
+                playSound('chime');
+                document.getElementById('core-count').innerText = collectedCores;
+                document.querySelectorAll('.beacon')[currentMemoryIdx].classList.add('collected');
+
+                if (collectedCores === 4) {
+                    document.getElementById('stage2-btn').disabled = false;
+                }
+            }
+        }
+
+        function goToStage3() {
+            document.getElementById('stage-2').classList.add('hidden-stage');
+            document.getElementById('stage-3').classList.remove('hidden-stage');
+            renderQuiz();
+        }
+
+        // ==========================================
+        // STAGE 3: Simple Vector Sigma Quiz
+        // ==========================================
+        const quizData = [
+            {
+                q: "1. Which Autobot represents your spirit?",
+                options: [
+                    "Optimus Prime — The wise and fearless leader",
+                    "Bumblebee — The fast, loyal, and energetic scout",
+                    "Ironhide — The tough, protective powerhouse"
+                ]
+            },
+            {
+                q: "2. Choose your Cybertronian vehicle mode:",
+                options: [
+                    "Heavy armored semi-truck",
+                    "High-speed sports interceptor",
+                    "Armored combat transport"
+                ]
+            },
+            {
+                q: "3. Pick your ultimate battle cry:",
+                options: [
+                    "Autobots, transform and roll out!",
+                    "Till all are one!",
+                    "One shall stand, one shall fall!"
+                ]
+            }
+        ];
+
+        let quizStep = 0;
+
+        function renderQuiz() {
+            const qObj = quizData[quizStep];
+            document.getElementById('quiz-question').innerText = qObj.q;
+            const optBox = document.getElementById('quiz-options');
+            optBox.innerHTML = '';
+
+            qObj.options.forEach((optText) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.onclick = () => selectQuizOption();
+                optBox.appendChild(btn);
+            });
+        }
+
+        function selectQuizOption() {
+            playSound('chime');
+            quizStep++;
+            if (quizStep < quizData.length) {
+                renderQuiz();
+            } else {
+                document.getElementById('quiz-question').innerText = "SPARK CALIBRATION COMPLETE";
+                document.getElementById('quiz-options').innerHTML = `
+                    <div style="background:rgba(255,190,11,0.15); border:1px solid var(--gold); padding:20px; border-radius:8px;">
+                        <h3 style="color:var(--gold); font-family:'Orbitron';">DESIGNATION: PRIME CLASS</h3>
+                        <p style="margin-top:6px; opacity:0.9;">SUPREME AUTOBOT GUARDIAN // WISDOM & COURAGE VERIFIED</p>
+                        <button class="hud-btn" style="margin-top:15px;" onclick="goToStage4()">ENTER THE MATRIX CHAMBER</button>
+                    </div>
+                `;
+            }
+        }
+
+        function goToStage4() {
+            document.getElementById('stage-3').classList.add('hidden-stage');
+            document.getElementById('stage-4').classList.remove('hidden-stage');
+        }
+
+        // ==========================================
+        // STAGE 4: Open Matrix
+        // ==========================================
+        function openMatrix() {
+            playSound('door');
+            document.getElementById('stage-4').classList.add('hidden-stage');
+            document.getElementById('stage-5').classList.remove('hidden-stage');
+            speakCurrentSide();
+        }
+
+        // ==========================================
+        // STAGE 5: Voice & Flip Card
+        // ==========================================
         let isCardFlipped = false;
 
         function setOpticsTalking(speaking) {
@@ -687,40 +887,29 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // Card Flip & Glitch Trigger
         function toggleCardFlip() {
-            const flipper = document.getElementById('card-flipper');
             isCardFlipped = !isCardFlipped;
-            flipper.classList.toggle('flipped');
-
-            const activeCard = isCardFlipped ? flipper.querySelector('.card-back') : flipper.querySelector('.card-front');
-            activeCard.classList.add('glitch-active');
-            setTimeout(() => activeCard.classList.remove('glitch-active'), 350);
-
+            document.getElementById('card-flipper').classList.toggle('flipped');
             speakCurrentSide();
         }
 
-        // Unlock
-        function unlockTerminal() {
-            stopChargeSound();
-            playBlastSound();
-
-            document.getElementById('unlock-core').classList.add('dismiss-core');
-            document.getElementById('door-left').classList.add('open-left');
-            document.getElementById('door-right').classList.add('open-right');
-
+        function terminateTransmission() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('optimus-scene').classList.add('shutdown');
             setTimeout(() => {
-                document.getElementById('optimus-scene').classList.add('revealed');
-                speakCurrentSide();
+                document.getElementById('stage-5').classList.add('hidden-stage');
+                document.getElementById('final-screen').classList.remove('hidden-stage');
             }, 600);
         }
 
         // 3D Parallax Tilt
-        const scene = document.getElementById('optimus-scene');
         document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 45;
-            const y = (window.innerHeight / 2 - e.pageY) / 45;
-            scene.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+            const scene = document.getElementById('optimus-scene');
+            if (scene) {
+                const x = (window.innerWidth / 2 - e.pageX) / 45;
+                const y = (window.innerHeight / 2 - e.pageY) / 45;
+                scene.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+            }
         });
 
         // Ambient Sparks
