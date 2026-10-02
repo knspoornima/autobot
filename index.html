@@ -3,278 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONFIDENTIAL TRANSMISSION: DECODED</title>
-    <!-- Importing futuristic fonts from Google Fonts -->
+    <title>AUTOBOT TACTICAL TERMINAL</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS 1: Structural Foundations and Colors */
         :root {
-            --bg-dark: #0b0e14; /* Dark metal */
-            --autobot-blue: #00d2ff; /* Glowing Cyan */
-            --glowing-text: #00f2fe;
-            --border-panel: rgba(0, 210, 255, 0.4);
-            --grid-line: rgba(0, 210, 255, 0.1);
+            --neon-blue: #00e5ff;
+            --matrix-glow: rgba(0, 229, 255, 0.4);
+            --bg-metal: #07090e;
+            --panel-bg: rgba(10, 16, 26, 0.85);
+            --danger-red: #ff2a2a;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            -webkit-tap-highlight-color: transparent; /* Clean mobile taps */
+            user-select: none;
         }
 
         body {
-            background-color: var(--bg-dark);
-            font-family: 'Share Tech Mono', monospace; /* Futuristic type */
-            color: var(--glowing-text);
-            overflow: hidden; /* Prevent scrolling during lock/transition */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: var(--bg-metal);
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--neon-blue);
             height: 100vh;
             width: 100vw;
-            user-select: none; /* Prevents text selection chaos */
-        }
-
-        /* Standardized Glowing Text (Cybertronian Look) */
-        .cyber-glow {
-            text-shadow: 0 0 5px var(--autobot-blue), 0 0 10px var(--autobot-blue), 0 0 15px var(--autobot-blue);
-        }
-
-        /* Hidden Class for State Transitions */
-        .hidden { display: none !important; }
-
-        /* ============================================================ */
-        /* CSS 2: The Lock Screen / Welcome Terminal */
-        /* ============================================================ */
-        #unlock-screen {
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            z-index: 10;
-            cursor: pointer;
-            transition: opacity 1s ease-out, transform 0.8s ease-in-out;
         }
 
-        /* Pulsing Glow Animation for the Lock Screen Crest */
-        @keyframes pulseGlow {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.8;
-                box-shadow: 0 0 15px var(--autobot-blue);
-            }
-            50% {
-                transform: scale(1.05);
-                opacity: 1;
-                box-shadow: 0 0 40px var(--autobot-blue), 0 0 60px var(--autobot-blue);
-            }
-        }
-
-        /* This is the interactive center 'lock' crest (mockup shape) */
-        #autobot-crest {
-            width: 150px;
-            height: 150px;
-            background-color: var(--autobot-blue);
-            mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
-            -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
-            animation: pulseGlow 2.5s infinite;
-            margin-bottom: 30px;
-        }
-
-        #unlock-screen h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-        }
-
-        #unlock-screen .blink {
-            animation: blinker 1s linear infinite;
-        }
-
-        @keyframes blinker {
-            50% { opacity: 0.2; }
-        }
-
-        /* State after unlocking: screen fades and shrinks */
-        #unlock-screen.unlocked {
-            opacity: 0;
-            transform: scale(0.5) rotateX(90deg);
+        /* Ambient Cyber-Particle Canvas */
+        #spark-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
             pointer-events: none;
         }
 
-        /* ============================================================ */
-        /* CSS 3: The Unlocked Terminal / Dashboard */
-        /* ============================================================ */
-        #terminal-dashboard {
-            width: 90%;
-            max-width: 800px;
-            height: 80vh;
+        /* CRT Scanline & Vignette Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+                        radial-gradient(circle, transparent 65%, black 130%);
+            background-size: 100% 4px, 100% 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* Mechanical Blast Doors */
+        .door {
+            position: fixed;
+            top: 0;
+            width: 50vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #111622 0%, #080b10 100%);
+            border-right: 2px solid var(--neon-blue);
+            z-index: 50;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+            display: flex;
+            align-items: center;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        #door-left {
+            left: 0;
+            justify-content: flex-end;
+            padding-right: 25px;
+        }
+
+        #door-right {
+            right: 0;
+            justify-content: flex-start;
+            padding-left: 25px;
+            border-right: none;
+            border-left: 2px solid var(--neon-blue);
+        }
+
+        .door-hazard-stripe {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: repeating-linear-gradient(45deg, #ffbb00, #ffbb00 15px, #111 15px, #111 30px);
+        }
+
+        /* Center Lock Core */
+        #unlock-core {
+            position: fixed;
+            z-index: 60;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            z-index: 1;
-            /* Initial state (will become visible via JS) */
-            opacity: 0;
-            transform: scale(1.2);
-            transition: opacity 1.5s ease 0.5s, transform 1s ease 0.5s; /* Delay it until lockscreen clears */
+            align-items: center;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.6s ease, opacity 0.6s ease;
         }
 
-        #terminal-dashboard.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Main Note Display Area */
-        #main-message-panel {
-            flex-grow: 1;
-            background-color: rgba(0, 210, 255, 0.05); /* Slight panel tint */
-            border: 2px solid var(--border-panel);
-            border-radius: 8px;
-            box-shadow: 0 0 20px var(--glowing-text);
-            padding: 30px;
-            overflow-y: auto; /* Scrollable note content */
+        .crest-ring {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 2px dashed var(--neon-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: rotateRadar 14s linear infinite;
+            box-shadow: 0 0 25px var(--matrix-glow);
             position: relative;
         }
 
-        /* Subtitle/Header */
-        .transmission-header {
+        @keyframes rotateRadar {
+            100% { transform: rotate(360deg); }
+        }
+
+        #autobot-crest {
+            width: 90px;
+            height: 90px;
+            background-color: var(--neon-blue);
+            mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
+            -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
+            filter: drop-shadow(0 0 15px var(--neon-blue));
+            animation: pulseCrest 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseCrest {
+            from { transform: scale(0.95); opacity: 0.8; }
+            to { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 25px #fff); }
+        }
+
+        /* Main HUD Terminal */
+        #hud-terminal {
+            width: 92vw;
+            max-width: 950px;
+            height: 84vh;
+            background: var(--panel-bg);
+            border: 1px solid var(--neon-blue);
+            border-radius: 8px;
+            box-shadow: 0 0 35px rgba(0, 229, 255, 0.2);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            position: relative;
+            backdrop-filter: blur(8px);
+        }
+
+        /* Corner HUD Brackets */
+        .bracket {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 3px solid var(--neon-blue);
+        }
+        .b-tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .b-tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .b-bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .b-br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* Top HUD Status Bar */
+        .hud-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+        }
+
+        .hud-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            color: var(--autobot-blue);
-            margin-bottom: 20px;
-            border-bottom: 1px dashed var(--border-panel);
-            padding-bottom: 10px;
-        }
-
-        /* Typewriter Effect (Managed via JS) */
-        #decoding-text {
-            line-height: 1.6;
             font-size: 1.1rem;
-            white-space: pre-wrap; /* Preserve line breaks */
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px var(--neon-blue);
         }
 
-        /* The animated 'Decoding' cursor */
-        #decoding-text::after {
-            content: "|";
-            display: inline-block;
-            margin-left: 2px;
-            animation: blinker 0.6s step-end infinite;
+        /* Terminal Body Grid (Message + Tech Specs) */
+        .terminal-grid {
+            display: grid;
+            grid-template-columns: 1fr 240px;
+            gap: 20px;
+            flex-grow: 1;
+            overflow: hidden;
         }
 
+        @media (max-width: 768px) {
+            .terminal-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+            }
+        }
+
+        /* Decrypted Message Box */
+        #message-box {
+            background: rgba(0, 15, 30, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            padding: 20px;
+            border-radius: 4px;
+            font-size: 1.02rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            text-shadow: 0 0 4px rgba(0, 229, 255, 0.7);
+        }
+
+        /* Tech Specs Side Gauge Panel */
+        .specs-panel {
+            background: rgba(0, 15, 30, 0.6);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            padding: 18px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .spec-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: #fff;
+            border-bottom: 1px dashed var(--neon-blue);
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.8rem;
+        }
+
+        .stat-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-blue), #ffffff);
+            box-shadow: 0 0 10px var(--neon-blue);
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Unlocked State Classes */
+        .open-left { transform: translateX(-100%); }
+        .open-right { transform: translateX(100%); }
+        .dismiss-core { opacity: 0; transform: scale(2.2); pointer-events: none; }
+        
+        .shake {
+            animation: screenShake 0.4s ease;
+        }
+
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0); }
+            20% { transform: translate(-4px, 4px); }
+            40% { transform: translate(4px, -3px); }
+            60% { transform: translate(-3px, 2px); }
+            80% { transform: translate(2px, -1px); }
+        }
     </style>
 </head>
-<body>
+<body id="screen-body">
 
-    <!-- ============================================================ -->
-    <!-- INTERACTIVE SCREEN 1: THE LOCKED TERMINAL (Biometric Scan) -->
-    <!-- ============================================================ -->
-    <div id="unlock-screen" class="visible" onclick="initializeAutobotTerminal()">
-        
-        <!-- Center Pulsing Autobot Crest (Mockup Icon) -->
-        <div id="autobot-crest"></div>
+    <div class="scanlines"></div>
+    <canvas id="spark-canvas"></canvas>
 
-        <h1 class="cyber-glow">AUTOBOT TERMINAL v3.8</h1>
-        <p class="blink">SCANNING FOR BIOMETRIC PROTOCOL...</p>
-        <p style="margin-top: 20px; color: var(--border-panel); font-size: 0.9rem;">(Click to Initialize)</p>
-
+    <!-- Mechanical Blast Doors -->
+    <div id="door-left" class="door">
+        <div class="door-hazard-stripe"></div>
+    </div>
+    <div id="door-right" class="door">
+        <div class="door-hazard-stripe"></div>
     </div>
 
+    <!-- Center Interactive Core -->
+    <div id="unlock-core" onclick="unlockTerminal()">
+        <div class="crest-ring">
+            <div id="autobot-crest"></div>
+        </div>
+        <h2 style="font-family:'Orbitron'; font-size:1.1rem; margin-top:20px; letter-spacing:3px;">TELETRAAN-I CLEARANCE</h2>
+        <p style="font-size:0.85rem; opacity:0.8; margin-top:6px; animation: pulseCrest 1s infinite alternate;">[ TAP COGNITIVE CORE TO DECRYPT ]</p>
+    </div>
 
-    <!-- ============================================================ -->
-    <!-- INTERACTIVE SCREEN 2: THE UNLOCKED TERMINAL (Thank You Note) -->
-    <!-- ============================================================ -->
-    <div id="terminal-dashboard">
-        
-        <div id="main-message-panel">
-            
-            <div class="transmission-header cyber-glow">CONFIDENTIAL: AUTOBOT HIGH COMMAND</div>
+    <!-- HUD Terminal (Revealed underneath) -->
+    <div id="hud-terminal">
+        <div class="bracket b-tl"></div>
+        <div class="bracket b-tr"></div>
+        <div class="bracket b-bl"></div>
+        <div class="bracket b-br"></div>
 
-            <!-- This div will hold the typewriter/decoding text -->
-            <div id="decoding-text"></div>
-
+        <div class="hud-topbar">
+            <span class="hud-title">TRANSMISSION DECRYPTED // PRIORITY ALPHA</span>
+            <span style="font-size:0.8rem; color:#ffbb00;">STATUS: LINK ESTABLISHED</span>
         </div>
 
+        <div class="terminal-grid">
+            <!-- Decoded Note -->
+            <div id="message-box"></div>
+
+            <!-- Tech Specs Side Gauges -->
+            <div class="specs-panel">
+                <div class="spec-title">COMMAND METRICS</div>
+
+                <div class="stat-item">
+                    <span>LEADERSHIP [10/10]</span>
+                    <div class="stat-bar-bg"><div class="stat-fill" data-width="100%"></div></div>
+                </div>
+
+                <div class="stat-item">
+                    <span>MENTORSHIP [10/10]</span>
+                    <div class="stat-bar-bg"><div class="stat-fill" data-width="100%"></div></div>
+                </div>
+
+                <div class="stat-item">
+                    <span>PATIENCE WITH ME [99/10]</span>
+                    <div class="stat-bar-bg"><div class="stat-fill" data-width="98%"></div></div>
+                </div>
+
+                <div class="stat-item">
+                    <span>TEAM ARMOR [9.8/10]</span>
+                    <div class="stat-bar-bg"><div class="stat-fill" data-width="95%"></div></div>
+                </div>
+
+                <div style="margin-top:auto; font-size:0.75rem; opacity:0.7; text-align:center;">
+                    VECTOR SIGMA VERIFIED<br>
+                    RANK: PRIME / BROTHER
+                </div>
+            </div>
+        </div>
     </div>
 
-
-    <!-- ============================================================ -->
-    <!-- JS Logic: Transitions and the Decoding/Typewriter Effect -->
-    <!-- ============================================================ -->
     <script>
-        // 1. The Script (Your Tribute Text)
-        // \n creates new lines in the output.
-        const thankYouMessage = `TO: Commander Prime (Brother / Manager)
-FROM: Your Most Reliable Recruit
-ENCRYPTION PROTOCOL: Till All Are One
+        // ==========================================
+        // 1. Procedural Web-Audio Synthesizer
+        // ==========================================
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-STATUS REPORT:
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            if (type === 'unlock') {
+                // Mechanical Transformation Servo Sound
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+                osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.8);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.8);
+            } else if (type === 'beep') {
+                // Subtle terminal data chirps
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1400 + Math.random() * 400, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            }
+        }
+
+        // ==========================================
+        // 2. Cybertronian Floating Spark Particles
+        // ==========================================
+        const canvas = document.getElementById('spark-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 20;
+                this.speed = 0.8 + Math.random() * 1.6;
+                this.size = 1 + Math.random() * 2.5;
+                this.alpha = 0.2 + Math.random() * 0.7;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -10) {
+                    this.y = canvas.height + 10;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(0, 229, 255, ${this.alpha})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = "#00e5ff";
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        for (let i = 0; i < 45; i++) particles.push(new Particle());
+
+        function animateSparks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateSparks);
+        }
+        animateSparks();
+
+        // ==========================================
+        // 3. Message & Matrix Scramble Decryption
+        // ==========================================
+        const noteText = `TO: Commander Prime (Brother & Manager)
+FROM: Your Most Reliable Recruit
+CLASSIFICATION: EYES ONLY
 
 "Freedom is the right of all sentient beings...
-but sane management is a rare miracle."
+but navigating projects without losing our minds is an art."
 
-Navigating daily battles is manageable only because
-you’re at the helm. Balancing the role of a brother
-and a manager isn't an easy protocol—it means
-backing me up like Ironhide in the field, while keeping
-me aligned like Prowl when I start scheming like Starscream.
+STATUS REPORT:
+Balancing the role of an elder brother and a team manager isn't an easy protocol. It means having my back like Ironhide in the trenches, while strategically re-aligning me like Prowl whenever I start acting like Starscream.
 
-Thank you for:
-- Shielding the team from unnecessary chaos.
-- Pushing me to upgrade my own specs rather than staying in vehicle mode.
-- Always being in my corner—both in standups and across family tables.
+THANK YOU FOR:
+• Taking the heavy hits and shielding us from chaotic corporate fire.
+• Challenging me to upgrade my own capabilities rather than coasting in vehicle mode.
+• Being an anchor both in daily standups and at family dinner tables.
 
-You are living proof that true leaders don’t just command;
-they transform the people around them.
+True leadership isn't just about command hierarchy; it's about transforming the people in your squad into leaders of their own.
 
-Till all are one.
--[Your Name]
+TILL ALL ARE ONE.
+— Your Brother & Teammate`;
 
-// DECODING COMPLETE //
-// TRANSMISSION TERMINATED. ROLL OUT. //`;
+        function matrixDecode(element, text) {
+            const chars = '01#@%&*<>{}[]+=~¥§';
+            let index = 0;
 
-        // 2. JS: Function to Handle the Terminal Initialization (Unlocking)
-        function initializeAutobotTerminal() {
-            // Get screen references
-            const lockScreen = document.getElementById('unlock-screen');
-            const dashboard = document.getElementById('terminal-dashboard');
-            const textPanel = document.getElementById('decoding-text');
-
-            // Sound Hook: We *could* play the transformation sound here, but browsers block auto-play.
-            // A click transition is the easiest way.
-
-            // a. Transition State 1: Lock screen vanishes
-            lockScreen.classList.add('unlocked');
-            
-            // b. Transition State 2: Dashboard appears
-            // Using setTimeout ensures the CSS transition timings line up.
-            setTimeout(() => {
-                lockScreen.classList.add('hidden'); // Fully remove from view
-                dashboard.classList.add('visible'); // Fade the dashboard in
+            const interval = setInterval(() => {
+                let displayed = text.substring(0, index);
                 
-                // c. State 3: Begin the typewriter effect
-                startDecodingTypewriter(textPanel, thankYouMessage, 35); // Adjust typing speed here (ms per char)
-
-            }, 800); // This timing must match the CSS transition duration (0.8s)
-        }
-
-        // 3. JS: Standard Typewriter/Decoding Effect
-        function startDecodingTypewriter(element, text, speed) {
-            let i = 0;
-            const timer = setInterval(() => {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(timer);
+                // Add 3-4 randomized scrambling characters ahead of the lock point
+                for (let k = 0; k < 3 && (index + k) < text.length; k++) {
+                    if (text[index + k] === '\n') {
+                        displayed += '\n';
+                    } else {
+                        displayed += chars[Math.floor(Math.random() * chars.length)];
+                    }
                 }
-            }, speed);
+
+                element.innerText = displayed;
+                if (index % 3 === 0) playSound('beep');
+
+                index++;
+                if (index > text.length) {
+                    clearInterval(interval);
+                    element.innerText = text; // Final clean pass
+                }
+            }, 25);
         }
 
+        // ==========================================
+        // 4. Blast Door Opening Sequence
+        // ==========================================
+        function unlockTerminal() {
+            playSound('unlock');
+
+            document.getElementById('screen-body').classList.add('shake');
+            document.getElementById('unlock-core').classList.add('dismiss-core');
+            document.getElementById('door-left').classList.add('open-left');
+            document.getElementById('door-right').classList.add('open-right');
+
+            setTimeout(() => {
+                document.getElementById('screen-body').classList.remove('shake');
+            }, 450);
+
+            // Animate tech spec gauges
+            setTimeout(() => {
+                document.querySelectorAll('.stat-fill').forEach(bar => {
+                    bar.style.width = bar.getAttribute('data-width');
+                });
+            }, 800);
+
+            // Begin matrix typewriter decoding
+            setTimeout(() => {
+                matrixDecode(document.getElementById('message-box'), noteText);
+            }, 1200);
+        }
     </script>
 </body>
 </html>
