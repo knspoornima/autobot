@@ -39,7 +39,6 @@
             perspective: 1200px;
         }
 
-        /* Ambient Sparks Canvas */
         #spark-canvas {
             position: fixed;
             top: 0;
@@ -50,7 +49,6 @@
             pointer-events: none;
         }
 
-        /* Scanline Overlay */
         .scanlines {
             position: fixed;
             top: 0;
@@ -64,7 +62,7 @@
             z-index: 99;
         }
 
-        /* Screen Stage Wrapper */
+        /* Stage Containers */
         .stage-container {
             position: absolute;
             width: 92vw;
@@ -73,18 +71,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            z-index: 20;
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        .hidden-stage {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.92);
-            position: absolute;
+        /* FIX: Stage 1 sits IN FRONT of the blast doors */
+        #stage-1 {
+            z-index: 60;
         }
 
-        /* General HUD Buttons */
+        .hidden-stage {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transform: scale(0.92);
+        }
+
+        /* Buttons */
         .hud-btn {
             background: rgba(0, 119, 255, 0.2);
             border: 1px solid var(--matrix-cyan);
@@ -111,52 +113,8 @@
         }
 
         /* ============================================================ */
-        /* STAGE 1: SIGNAL FREQUENCY TUNER */
+        /* BLAST DOORS */
         /* ============================================================ */
-        .tuner-box {
-            background: var(--card-glass);
-            border: 2px solid var(--matrix-cyan);
-            border-radius: 12px;
-            padding: 30px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
-        }
-
-        .freq-display {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.8rem;
-            color: var(--gold);
-            text-shadow: 0 0 15px var(--gold);
-            margin: 15px 0;
-        }
-
-        .slider-wrapper {
-            margin: 25px 0;
-            width: 100%;
-        }
-
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 10px;
-            background: rgba(0, 240, 255, 0.2);
-            border-radius: 5px;
-            outline: none;
-            border: 1px solid var(--matrix-cyan);
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 28px;
-            height: 28px;
-            background: var(--matrix-cyan);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--matrix-cyan);
-        }
-
-        /* Blast Doors */
         .door {
             position: fixed;
             top: 0;
@@ -180,6 +138,52 @@
         }
         .open-left { transform: translateX(-100%); }
         .open-right { transform: translateX(100%); }
+
+        /* ============================================================ */
+        /* STAGE 1: SIGNAL FREQUENCY TUNER */
+        /* ============================================================ */
+        .tuner-box {
+            background: var(--card-glass);
+            border: 2px solid var(--matrix-cyan);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 45px rgba(0, 240, 255, 0.35);
+        }
+
+        .freq-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--gold);
+            margin: 15px 0;
+        }
+
+        .slider-wrapper {
+            margin: 25px 0;
+            width: 100%;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 12px;
+            background: rgba(0, 240, 255, 0.2);
+            border-radius: 6px;
+            outline: none;
+            border: 1px solid var(--matrix-cyan);
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 32px;
+            height: 32px;
+            background: var(--matrix-cyan);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--matrix-cyan);
+        }
 
         /* ============================================================ */
         /* STAGE 2: TACTICAL STAR MAP */
@@ -208,14 +212,14 @@
             height: 280px;
             border: 1px dashed rgba(0, 240, 255, 0.3);
             border-radius: 8px;
-            background: radial-gradient(circle, rgba(0, 119, 255, 0.1) 10%, transparent 80%);
+            background: radial-gradient(circle, rgba(0, 119, 255, 0.12) 10%, transparent 80%);
             overflow: hidden;
         }
 
         .beacon {
             position: absolute;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             border: 2px solid var(--matrix-cyan);
             display: flex;
@@ -224,27 +228,29 @@
             cursor: pointer;
             animation: beaconPulse 2s infinite;
             transform: translate(-50%, -50%);
+            background: rgba(0, 240, 255, 0.15);
         }
         .beacon.collected {
             border-color: var(--gold);
-            background: rgba(255, 190, 11, 0.3);
+            background: rgba(255, 190, 11, 0.4);
+            box-shadow: 0 0 15px var(--gold);
         }
-        .beacon span { font-size: 0.75rem; font-weight: bold; color: #fff; }
+        .beacon span { font-size: 0.85rem; font-weight: bold; color: #fff; font-family:'Orbitron'; }
 
         @keyframes beaconPulse {
             0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 240, 255, 0); }
+            70% { box-shadow: 0 0 0 16px rgba(0, 240, 255, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
         }
 
-        /* Modal Dialog */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(8px);
             z-index: 80;
             display: flex;
@@ -306,8 +312,15 @@
         /* STAGE 4: MATRIX OF LEADERSHIP UNLATCH */
         /* ============================================================ */
         .matrix-unlatch-box {
+            background: var(--card-glass);
+            border: 2px solid var(--matrix-cyan);
+            border-radius: 12px;
+            padding: 36px 30px;
             text-align: center;
+            width: 100%;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
         }
+
         .matrix-core-artifact {
             width: 220px;
             height: 140px;
@@ -316,9 +329,7 @@
             cursor: pointer;
             transition: transform 0.2s ease;
         }
-        .matrix-core-artifact:hover {
-            transform: scale(1.05);
-        }
+        .matrix-core-artifact:hover { transform: scale(1.08); }
 
         /* ============================================================ */
         /* STAGE 5: OPTIMUS & CARD */
@@ -420,10 +431,7 @@
             margin-bottom: 8px;
         }
 
-        /* Shutdown Animation */
-        .shutdown {
-            animation: crtShutdown 0.6s forwards;
-        }
+        .shutdown { animation: crtShutdown 0.6s forwards; }
         @keyframes crtShutdown {
             0% { transform: scale(1); filter: brightness(1); }
             50% { transform: scaleY(0.01) scaleX(1.1); filter: brightness(5); }
@@ -449,12 +457,12 @@
     <div id="door-right" class="door"><div class="hazard-stripe"></div></div>
 
     <!-- ============================================================ -->
-    <!-- STAGE 1: SIGNAL FREQUENCY TUNER (ACTIVITY 1) -->
+    <!-- STAGE 1: SIGNAL FREQUENCY TUNER (Sits in front of doors) -->
     <!-- ============================================================ -->
     <div id="stage-1" class="stage-container">
         <div class="tuner-box">
             <h2 style="font-family:'Orbitron'; letter-spacing:2px; color:var(--matrix-cyan);">COMM CHANNEL JAMMED</h2>
-            <p style="margin-top:6px; opacity:0.8;">Decepticon interference detected. Align tuner to target frequency: <strong>84.0 MHz</strong></p>
+            <p style="margin-top:6px; opacity:0.85;">Decepticon interference detected. Align tuner to target frequency: <strong>84.0 MHz</strong></p>
             
             <div class="freq-display" id="freq-val">80.0 <span style="font-size:1.2rem;">MHz</span></div>
             
@@ -462,13 +470,13 @@
                 <input type="range" id="freq-slider" min="80.0" max="90.0" step="0.1" value="80.0" oninput="tuneFrequency(this.value)">
             </div>
 
-            <p id="lock-hint" style="color:var(--gold); font-size:0.9rem;">[ SLIDE TO MATCH FREQUENCY ]</p>
+            <p id="lock-hint" style="color:var(--gold); font-size:0.95rem; font-weight:700;">[ SLIDE TO MATCH 84.0 MHz ]</p>
             <button id="stage1-btn" class="hud-btn" disabled onclick="unlockStage1()">INITIATE SPACE BRIDGE</button>
         </div>
     </div>
 
     <!-- ============================================================ -->
-    <!-- STAGE 2: TACTICAL STAR MAP (ACTIVITY 2) -->
+    <!-- STAGE 2: TACTICAL STAR MAP -->
     <!-- ============================================================ -->
     <div id="stage-2" class="stage-container hidden-stage">
         <div class="star-map-box">
@@ -477,10 +485,9 @@
                 <span style="font-family:'Orbitron'; font-size:0.9rem; color:var(--gold);">ENERGON: <span id="core-count">0</span> / 4</span>
             </div>
 
-            <p style="font-size:0.85rem; opacity:0.8; margin-bottom:12px;">Tap all 4 coordinate beacons to retrieve shared memory files and harvest energon cores:</p>
+            <p style="font-size:0.85rem; opacity:0.85; margin-bottom:12px;">Tap all 4 coordinate beacons to retrieve shared memory files and harvest energon cores:</p>
 
             <div class="star-canvas-area">
-                <!-- 4 Interactive Beacons -->
                 <div class="beacon" style="top:25%; left:20%;" onclick="openMemory(0)"><span>1</span></div>
                 <div class="beacon" style="top:70%; left:35%;" onclick="openMemory(1)"><span>2</span></div>
                 <div class="beacon" style="top:30%; left:75%;" onclick="openMemory(2)"><span>3</span></div>
@@ -503,7 +510,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- STAGE 3: VECTOR SIGMA SPARK QUIZ (ACTIVITY 3) -->
+    <!-- STAGE 3: VECTOR SIGMA SPARK QUIZ -->
     <!-- ============================================================ -->
     <div id="stage-3" class="stage-container hidden-stage">
         <div class="quiz-box">
@@ -516,21 +523,18 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- STAGE 4: MATRIX OF LEADERSHIP UNLATCH (ACTIVITY 4) -->
+    <!-- STAGE 4: MATRIX OF LEADERSHIP UNLATCH -->
     <!-- ============================================================ -->
     <div id="stage-4" class="stage-container hidden-stage">
         <div class="matrix-unlatch-box">
             <h2 style="font-family:'Orbitron'; color:var(--gold); letter-spacing:2px;">THE MATRIX OF LEADERSHIP</h2>
-            <p style="margin:8px 0 20px; opacity:0.85;">Hold and release the Matrix core to channel the Spark of Primus:</p>
+            <p style="margin:8px 0 20px; opacity:0.85;">Tap the Matrix core to release the Spark of Primus:</p>
 
             <div class="matrix-core-artifact" onclick="openMatrix()" title="Click to Unleash Matrix">
                 <svg viewBox="0 0 200 130" width="100%" height="100%">
-                    <!-- Outer Handles -->
                     <path d="M 30,65 C 10,20 10,110 30,65" fill="none" stroke="#ffbe0b" stroke-width="8" stroke-linecap="round"/>
                     <path d="M 170,65 C 190,20 190,110 170,65" fill="none" stroke="#ffbe0b" stroke-width="8" stroke-linecap="round"/>
-                    <!-- Matrix Housing -->
                     <ellipse cx="100" cy="65" rx="60" ry="38" fill="#1e293b" stroke="#ffbe0b" stroke-width="4"/>
-                    <!-- Crystal Core -->
                     <circle cx="100" cy="65" r="24" fill="#00f0ff" filter="drop-shadow(0 0 15px #00f0ff)"/>
                 </svg>
             </div>
@@ -540,7 +544,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- STAGE 5: OPTIMUS TRANSMISSION & CARD (STAGE 5) -->
+    <!-- STAGE 5: OPTIMUS TRANSMISSION & CARD -->
     <!-- ============================================================ -->
     <div id="stage-5" class="stage-container hidden-stage">
         <div class="optimus-scene" id="optimus-scene">
@@ -554,27 +558,22 @@
                         <linearGradient id="windowGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00f0ff"/><stop offset="100%" stop-color="#005577"/></linearGradient>
                     </defs>
 
-                    <!-- Shoulders -->
                     <polygon points="10,150 45,95 85,95 85,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
                     <line x1="25" y1="140" x2="50" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
                     <polygon points="190,150 155,95 115,95 115,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
                     <line x1="175" y1="140" x2="150" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
                     
-                    <!-- Windows -->
                     <rect x="52" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
                     <rect x="106" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
 
-                    <!-- Head & Crest -->
                     <polygon points="62,15 72,55 60,65 52,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
                     <polygon points="138,15 128,55 140,65 148,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
                     <polygon points="95,10 105,10 102,40 98,40" fill="#00aaff"/>
                     <rect x="70" y="32" width="60" height="38" rx="4" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="2"/>
 
-                    <!-- Optics -->
                     <rect id="optics-l" x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
                     <rect id="optics-r" x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
 
-                    <!-- Mouthplate -->
                     <polygon points="82,58 118,58 112,82 88,82" fill="#cbd5e1" stroke="#fff" stroke-width="1.5"/>
                 </svg>
             </div>
@@ -582,7 +581,6 @@
             <!-- Card Stage Gripped by Hands -->
             <div class="card-stage">
                 
-                <!-- Left Hand -->
                 <svg class="mech-hand hand-l" viewBox="0 0 50 100">
                     <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
                     <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
@@ -591,7 +589,6 @@
                     <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
                 </svg>
 
-                <!-- Flippable Card -->
                 <div class="card-flipper" id="card-flipper">
                     
                     <!-- FRONT: Poem -->
@@ -635,7 +632,6 @@
 
                 </div>
 
-                <!-- Right Hand -->
                 <svg class="mech-hand hand-r" viewBox="0 0 50 100">
                     <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
                     <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
@@ -646,7 +642,6 @@
 
             </div>
 
-            <!-- Sign-Off Button (Equivalent to Mischief Managed) -->
             <button class="hud-btn" style="border-color:#ff4444; color:#ff8888; margin-top:20px;" onclick="terminateTransmission()">⚡ TERMINATE UPLINK</button>
         </div>
     </div>
@@ -658,9 +653,6 @@
     </div>
 
     <script>
-        // ==========================================
-        // Web Audio Synthesizer (Pure Browser Audio)
-        // ==========================================
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playSound(type) {
@@ -694,9 +686,7 @@
             }
         }
 
-        // ==========================================
-        // STAGE 1: Frequency Tuner Logic
-        // ==========================================
+        // STAGE 1: Frequency Tuner
         function tuneFrequency(val) {
             document.getElementById('freq-val').innerHTML = `${parseFloat(val).toFixed(1)} <span style="font-size:1.2rem;">MHz</span>`;
             if (Math.abs(val - 84.0) < 0.25) {
@@ -713,21 +703,20 @@
 
         function unlockStage1() {
             playSound('door');
+            // Hide Stage 1 and open blast doors simultaneously
+            document.getElementById('stage-1').classList.add('hidden-stage');
             document.getElementById('door-left').classList.add('open-left');
             document.getElementById('door-right').classList.add('open-right');
 
             setTimeout(() => {
-                document.getElementById('stage-1').classList.add('hidden-stage');
                 document.getElementById('stage-2').classList.remove('hidden-stage');
-            }, 700);
+            }, 600);
         }
 
-        // ==========================================
-        // STAGE 2: Star Map & Memory Logs
-        // ==========================================
+        // STAGE 2: Star Map & Memories
         const memoryData = [
-            { title: "ORIGIN COORDINATES", desc: "Where the journey began. Navigating childhood, growing up together, and forming an unbreakable bond." },
-            { title: "THE CRUCIBLE SECTOR", desc: "Every time heavy challenges arose, you stood strong as the shield and guided our path through the storm." },
+            { title: "ORIGIN COORDINATES", desc: "Where our journey began. Growing up together, facing the early chaos, and building an unbreakable bond." },
+            { title: "THE CRUCIBLE SECTOR", desc: "Every time a heavy challenge hit the frontline, you stood strong as the shield and guided the way forward." },
             { title: "OFF-DUTY SECTOR", desc: "All the laughs, shared inside jokes, and daily banter that make our squad truly one of a kind." },
             { title: "CURRENT ORBIT", desc: "Standing together today—stronger than ever, ready for whatever mission comes next across the stars." }
         ];
@@ -764,9 +753,7 @@
             renderQuiz();
         }
 
-        // ==========================================
-        // STAGE 3: Simple Vector Sigma Quiz
-        // ==========================================
+        // STAGE 3: Quiz
         const quizData = [
             {
                 q: "1. Which Autobot represents your spirit?",
@@ -833,9 +820,7 @@
             document.getElementById('stage-4').classList.remove('hidden-stage');
         }
 
-        // ==========================================
         // STAGE 4: Open Matrix
-        // ==========================================
         function openMatrix() {
             playSound('door');
             document.getElementById('stage-4').classList.add('hidden-stage');
@@ -843,9 +828,7 @@
             speakCurrentSide();
         }
 
-        // ==========================================
-        // STAGE 5: Voice & Flip Card
-        // ==========================================
+        // STAGE 5: Voice & Card
         let isCardFlipped = false;
 
         function setOpticsTalking(speaking) {
