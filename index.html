@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPTIMUS PRIME // MESSAGE CARD</title>
+    <title>OPTIMUS PRIME // MATRIX ARCHIVE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
@@ -11,10 +11,11 @@
     <style>
         :root {
             --prime-blue: #0077ff;
-            --prime-red: #e61919;
+            --prime-red: #d90429;
             --matrix-cyan: #00f0ff;
+            --energon-glow: rgba(0, 240, 255, 0.4);
             --gold: #ffbe0b;
-            --metal-bg: #07090e;
+            --metal-bg: #05070c;
         }
 
         * {
@@ -22,6 +23,7 @@
             margin: 0;
             padding: 0;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -34,17 +36,41 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1000px;
+            perspective: 1200px;
         }
 
-        /* Ambient floating particles */
+        /* 3D Cybertron Ground Grid */
+        .cyber-grid {
+            position: fixed;
+            bottom: -30vh;
+            left: -50vw;
+            width: 200vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.15) 1px, transparent 1px),
+                linear-gradient(to top, rgba(0, 240, 255, 0.15) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: rotateX(75deg);
+            pointer-events: none;
+            z-index: 1;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, transparent 80%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, transparent 80%);
+            animation: gridScroll 12s linear infinite;
+        }
+
+        @keyframes gridScroll {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 60px; }
+        }
+
+        /* Ambient floating energon embers */
         #spark-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 1;
+            z-index: 2;
             pointer-events: none;
         }
 
@@ -54,7 +80,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%),
                         radial-gradient(circle, transparent 65%, black 140%);
             background-size: 100% 4px, 100% 100%;
             pointer-events: none;
@@ -85,7 +111,7 @@
             background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 15px, #111 15px, #111 30px);
         }
 
-        /* Central Lock Core */
+        /* Hold to Charge Unlock Core */
         #unlock-core {
             position: fixed;
             z-index: 60;
@@ -97,33 +123,49 @@
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
-        .crest-ring {
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            border: 2px dashed var(--matrix-cyan);
+        .charge-ring-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: spin 16s linear infinite;
-            box-shadow: 0 0 35px rgba(0, 240, 255, 0.35);
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .charge-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .charge-bg-circle {
+            fill: none;
+            stroke: rgba(0, 240, 255, 0.15);
+            stroke-width: 6;
+        }
+
+        .charge-fill-circle {
+            fill: none;
+            stroke: var(--matrix-cyan);
+            stroke-width: 6;
+            stroke-dasharray: 502;
+            stroke-dashoffset: 502;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 10px var(--matrix-cyan));
+            transition: stroke-dashoffset 0.1s linear;
+        }
 
         #autobot-crest {
-            width: 95px;
-            height: 95px;
+            width: 90px;
+            height: 90px;
             background-color: var(--matrix-cyan);
             mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
             -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
             filter: drop-shadow(0 0 16px var(--matrix-cyan));
-            animation: pulse 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { transform: scale(0.95); opacity: 0.8; }
-            to { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 28px #fff); }
+            transition: transform 0.2s;
         }
 
         /* 3D Scene Wrapper */
@@ -131,7 +173,7 @@
             position: relative;
             z-index: 10;
             width: 92vw;
-            max-width: 680px;
+            max-width: 720px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -150,20 +192,34 @@
         /* Optimus Prime Bust */
         .optimus-head-wrapper {
             position: relative;
-            width: 240px;
-            height: 170px;
+            width: 250px;
+            height: 175px;
             margin-bottom: -32px;
             z-index: 5;
             filter: drop-shadow(0 0 25px rgba(0, 119, 255, 0.5));
-            animation: breathing 3.5s ease-in-out infinite alternate;
+            animation: floatPrime 4s ease-in-out infinite alternate;
         }
 
-        @keyframes breathing {
+        @keyframes floatPrime {
             0% { transform: translateY(0); }
             100% { transform: translateY(-6px); }
         }
 
-        /* Card Container & Clamping Hands */
+        /* Optics speech sync flickering */
+        .eye-pulse {
+            transition: filter 0.05s ease, opacity 0.05s ease;
+        }
+
+        .speaking-optics {
+            animation: opticFlicker 0.12s infinite alternate;
+        }
+
+        @keyframes opticFlicker {
+            0% { opacity: 0.4; filter: drop-shadow(0 0 2px #00f0ff); }
+            100% { opacity: 1; filter: drop-shadow(0 0 12px #fff); }
+        }
+
+        /* Card 3D Flip System */
         .card-stage {
             position: relative;
             width: 100%;
@@ -171,45 +227,79 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            perspective: 1200px;
         }
 
         .mech-hand {
             position: absolute;
-            width: 65px;
-            height: 130px;
-            z-index: 25;
-            filter: drop-shadow(0 0 12px rgba(0, 119, 255, 0.7));
+            width: 70px;
+            height: 135px;
+            z-index: 30;
+            filter: drop-shadow(0 0 14px rgba(0, 119, 255, 0.7));
             pointer-events: none;
         }
 
         .hand-l { left: -26px; }
         .hand-r { right: -26px; transform: scaleX(-1); }
 
-        /* The Message Card */
-        #message-card {
+        .card-flipper {
+            width: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-flipper.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
             width: 100%;
             background: linear-gradient(165deg, rgba(14, 22, 38, 0.95) 0%, rgba(6, 10, 18, 0.95) 100%);
             border: 2px solid var(--matrix-cyan);
             border-radius: 12px;
             box-shadow: 0 0 45px rgba(0, 240, 255, 0.25), inset 0 0 30px rgba(0, 240, 255, 0.08);
             backdrop-filter: blur(14px);
-            padding: 36px 44px;
-            position: relative;
+            padding: 34px 44px;
             display: flex;
             flex-direction: column;
-            gap: 22px;
-            text-align: center;
+            gap: 18px;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            position: relative;
             overflow: hidden;
         }
 
-        /* Glowing watermark crest in background of card */
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            transform: rotateY(180deg);
+            text-align: left;
+        }
+
+        /* Glitch Animation */
+        .glitch-active {
+            animation: glitchEffect 0.3s ease;
+        }
+
+        @keyframes glitchEffect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+            40% { transform: translate(3px, -2px); filter: invert(0.2); }
+            60% { transform: translate(-2px, -1px); }
+            80% { transform: translate(2px, 1px); }
+            100% { transform: translate(0); }
+        }
+
         .card-watermark {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 260px;
-            height: 260px;
+            width: 250px;
+            height: 250px;
             background-color: var(--matrix-cyan);
             mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
             -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
@@ -217,13 +307,12 @@
             pointer-events: none;
         }
 
-        /* Card Header */
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-            padding-bottom: 12px;
+            padding-bottom: 10px;
         }
 
         .card-header span {
@@ -231,17 +320,15 @@
             font-size: 0.85rem;
             letter-spacing: 2px;
             color: var(--matrix-cyan);
-            text-shadow: 0 0 8px var(--matrix-cyan);
         }
 
-        /* Centered Poem Layout */
+        /* Front Poem Text */
         .poem-container {
-            position: relative;
-            z-index: 2;
-            padding: 10px 0;
+            text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            padding: 8px 0;
         }
 
         .poem-line {
@@ -250,7 +337,7 @@
             font-weight: 800;
             letter-spacing: 1.5px;
             color: #ffffff;
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.6), 0 0 24px rgba(0, 240, 255, 0.3);
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
             line-height: 1.4;
         }
 
@@ -259,25 +346,35 @@
             text-shadow: 0 0 12px rgba(255, 190, 11, 0.7);
         }
 
-        /* Card Footer & Audio Button */
+        /* Back Note Text */
+        .personal-note {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            max-height: 200px;
+            padding-right: 6px;
+        }
+
+        .personal-note h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--matrix-cyan);
+            font-size: 1.05rem;
+        }
+
+        /* Footer Controls */
         .card-footer {
-            position: relative;
-            z-index: 2;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px dashed rgba(0, 240, 255, 0.3);
-            padding-top: 16px;
+            padding-top: 14px;
         }
 
-        .footer-tag {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 1.5px;
-            color: var(--matrix-cyan);
-        }
-
-        .voice-btn {
+        .action-btn {
             background: rgba(0, 119, 255, 0.2);
             border: 1px solid var(--matrix-cyan);
             color: #fff;
@@ -291,7 +388,7 @@
             transition: all 0.2s;
         }
 
-        .voice-btn:hover {
+        .action-btn:hover {
             background: var(--matrix-cyan);
             color: #000;
             box-shadow: 0 0 20px var(--matrix-cyan);
@@ -303,31 +400,39 @@
         .dismiss-core { opacity: 0; transform: scale(2); pointer-events: none; }
 
         @media (max-width: 600px) {
-            .poem-line { font-size: 1.15rem; }
+            .poem-line { font-size: 1.1rem; }
             .optimus-head-wrapper { width: 190px; height: 140px; margin-bottom: -25px; }
-            #message-card { padding: 24px 20px; }
+            .card-face { padding: 22px 18px; }
             .hand-l { left: -16px; width: 45px; }
             .hand-r { right: -16px; width: 45px; }
+            .personal-note { font-size: 0.95rem; }
         }
     </style>
 </head>
 <body id="screen-body">
 
     <div class="scanlines"></div>
+    <div class="cyber-grid"></div>
     <canvas id="spark-canvas"></canvas>
 
     <!-- Heavy Blast Doors -->
     <div id="door-left" class="door"><div class="hazard-stripe"></div></div>
     <div id="door-right" class="door"><div class="hazard-stripe"></div></div>
 
-    <!-- Center Tap to Unlock -->
-    <div id="unlock-core" onclick="unlockTerminal()">
-        <div class="crest-ring"><div id="autobot-crest"></div></div>
-        <h2 style="font-family:'Orbitron'; font-size:1.15rem; margin-top:20px; letter-spacing:3px;">TELETRAAN-I CLEARANCE</h2>
-        <p style="font-size:0.85rem; opacity:0.85; margin-top:6px; animation: pulse 1s infinite alternate;">[ TAP TO SUMMON OPTIMUS PRIME ]</p>
+    <!-- Hold to Charge Core -->
+    <div id="unlock-core">
+        <div class="charge-ring-container" id="charge-trigger">
+            <svg class="charge-svg" viewBox="0 0 180 180">
+                <circle class="charge-bg-circle" cx="90" cy="90" r="80"></circle>
+                <circle class="charge-fill-circle" id="charge-bar" cx="90" cy="90" r="80"></circle>
+            </svg>
+            <div id="autobot-crest"></div>
+        </div>
+        <h2 style="font-family:'Orbitron'; font-size:1.1rem; margin-top:18px; letter-spacing:3px;">ENERGON PROTOCOL</h2>
+        <p id="charge-status" style="font-size:0.85rem; opacity:0.85; margin-top:6px; color:var(--matrix-cyan);">[ PRESS & HOLD TO CHARGE MATRIX ]</p>
     </div>
 
-    <!-- The 3D Scene -->
+    <!-- The 3D Optimus Scene -->
     <div id="optimus-scene">
         
         <!-- Optimus Prime Bust SVG -->
@@ -348,14 +453,16 @@
                     </linearGradient>
                 </defs>
 
-                <!-- Shoulders & Upper Chest -->
+                <!-- Shoulders & Upper Chest with Glowing Circuit Traces -->
                 <polygon points="10,150 45,95 85,95 85,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
+                <line x1="25" y1="140" x2="50" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
                 <polygon points="190,150 155,95 115,95 115,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
+                <line x1="175" y1="140" x2="150" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
                 
-                <!-- Truck Windshield Windows -->
+                <!-- Chest Windows -->
                 <rect x="52" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
                 <rect x="106" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
-                <rect x="92" y="125" width="16" height="25" fill="#444" stroke="#888" stroke-width="1"/>
+                <rect x="92" y="125" width="16" height="25" fill="#333" stroke="#888" stroke-width="1"/>
 
                 <!-- Helmet & Head Fins -->
                 <polygon points="62,15 72,55 60,65 52,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
@@ -363,55 +470,82 @@
                 <polygon points="95,10 105,10 102,40 98,40" fill="#00aaff"/>
                 <rect x="70" y="32" width="60" height="38" rx="4" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="2"/>
 
-                <!-- Glowing Optics -->
-                <rect x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
-                <rect x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
+                <!-- Speech-Synced Glowing Optics -->
+                <rect id="optics-l" class="eye-pulse" x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
+                <rect id="optics-r" class="eye-pulse" x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
 
-                <!-- Silver Mouth Plate -->
+                <!-- Silver Mouthplate -->
                 <polygon points="82,58 118,58 112,82 88,82" fill="#cbd5e1" stroke="#fff" stroke-width="1.5"/>
                 <line x1="90" y1="68" x2="110" y2="68" stroke="#64748b" stroke-width="2"/>
                 <line x1="94" y1="74" x2="106" y2="74" stroke="#64748b" stroke-width="2"/>
             </svg>
         </div>
 
-        <!-- The Message Card Gripped by Hands -->
+        <!-- 3D Flippable Card Gripped by Hands -->
         <div class="card-stage">
             
-            <!-- Left Hand Clamping Card -->
+            <!-- Left Hand with Glowing Conduits -->
             <svg class="mech-hand hand-l" viewBox="0 0 50 100">
                 <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
-                <!-- Knuckles overlapping card border -->
+                <line x1="10" y1="30" x2="10" y2="70" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3,2"/>
                 <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
                 <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
                 <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
                 <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
             </svg>
 
-            <!-- Cleanly Formatted Message Plaque -->
-            <div id="message-card">
-                <div class="card-watermark"></div>
+            <!-- Card Flipper (Holds Front & Back) -->
+            <div class="card-flipper" id="card-flipper">
+                
+                <!-- FRONT: Celestial Star Poem -->
+                <div class="card-face card-front">
+                    <div class="card-watermark"></div>
 
-                <div class="card-header">
-                    <span>TRANSMISSION // OPTIMUS PRIME</span>
-                    <span style="color:var(--gold);">SECTOR 7 CELESTIAL ARCHIVE</span>
+                    <div class="card-header">
+                        <span>TRANSMISSION // SECTOR 7</span>
+                        <span style="color:var(--gold);">CELESTIAL BEACON</span>
+                    </div>
+
+                    <div class="poem-container">
+                        <p class="poem-line">Twinkle, twinkle, little star,</p>
+                        <p class="poem-line poem-highlight">How I wonder what you are!</p>
+                        <p class="poem-line">Up above the world so high,</p>
+                        <p class="poem-line poem-highlight">Like a diamond in the sky.</p>
+                    </div>
+
+                    <div class="card-footer">
+                        <button class="action-btn" onclick="toggleCardFlip()">🔄 FLIP: PERSONAL ARCHIVE</button>
+                        <button class="action-btn" onclick="speakCurrentSide()">🔊 VOICE</button>
+                    </div>
                 </div>
 
-                <div class="poem-container">
-                    <p class="poem-line">Twinkle, twinkle, little star,</p>
-                    <p class="poem-line poem-highlight">How I wonder what you are!</p>
-                    <p class="poem-line">Up above the world so high,</p>
-                    <p class="poem-line poem-highlight">Like a diamond in the sky.</p>
+                <!-- BACK: Heartfelt Brother & Manager Tribute -->
+                <div class="card-face card-back">
+                    <div class="card-watermark"></div>
+
+                    <div class="card-header">
+                        <span>CLASSIFIED // HIGH COMMAND</span>
+                        <span style="color:var(--matrix-cyan);">BROTHER & MANAGER</span>
+                    </div>
+
+                    <div class="personal-note">
+                        <h4>"Freedom is the right of all sentient beings..."</h4>
+                        <p>Balancing being an elder brother and a team manager isn't an easy protocol. Thank you for having my back like Ironhide in the field, keeping me aligned when I start scheming like Starscream, and always shielding our squad from the heavy hits.</p>
+                        <p style="color:var(--gold); font-weight:700;">True leaders don't just command; they transform everyone around them.</p>
+                    </div>
+
+                    <div class="card-footer">
+                        <button class="action-btn" onclick="toggleCardFlip()">🔄 FLIP: CELESTIAL BEACON</button>
+                        <button class="action-btn" onclick="speakCurrentSide()">🔊 VOICE</button>
+                    </div>
                 </div>
 
-                <div class="card-footer">
-                    <button class="voice-btn" onclick="speakOptimusPrime()">🔊 REPLAY OPTIMUS VOICE</button>
-                    <span class="footer-tag">TILL ALL ARE ONE</span>
-                </div>
             </div>
 
-            <!-- Right Hand Clamping Card -->
+            <!-- Right Hand with Glowing Conduits -->
             <svg class="mech-hand hand-r" viewBox="0 0 50 100">
                 <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
+                <line x1="10" y1="30" x2="10" y2="70" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3,2"/>
                 <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
                 <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
                 <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
@@ -422,18 +556,45 @@
     </div>
 
     <script>
-        // Web Audio Synthesizer
+        // ==========================================
+        // Web Audio Synthesizer (Charge, Clanks & Drone)
+        // ==========================================
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let chargeOsc = null;
+        let chargeGain = null;
 
-        function playUnlockSound() {
+        function startChargeSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
+            chargeOsc = audioCtx.createOscillator();
+            chargeGain = audioCtx.createGain();
+            chargeOsc.type = 'sawtooth';
+            chargeOsc.frequency.setValueAtTime(80, audioCtx.currentTime);
+            chargeOsc.frequency.exponentialRampToValueAtTime(650, audioCtx.currentTime + 1.5);
+            chargeGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+            chargeGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 1.5);
+            chargeOsc.connect(chargeGain);
+            chargeGain.connect(audioCtx.destination);
+            chargeOsc.start();
+        }
+
+        function stopChargeSound() {
+            if (chargeOsc) {
+                try {
+                    chargeGain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    chargeOsc.stop(audioCtx.currentTime + 0.1);
+                } catch(e) {}
+                chargeOsc = null;
+            }
+        }
+
+        function playBlastSound() {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(110, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + 0.35);
-            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.9);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(850, audioCtx.currentTime + 0.25);
+            osc.frequency.exponentialRampToValueAtTime(45, audioCtx.currentTime + 0.9);
+            gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.9);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -441,39 +602,129 @@
             osc.stop(audioCtx.currentTime + 0.9);
         }
 
-        function playChestHum(durationSec) {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(80, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + durationSec);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + durationSec);
-            } catch(e) {}
+        // ==========================================
+        // Hold-to-Charge Energon Logic
+        // ==========================================
+        const chargeTrigger = document.getElementById('charge-trigger');
+        const chargeBar = document.getElementById('charge-bar');
+        const chargeStatus = document.getElementById('charge-status');
+        const crest = document.getElementById('autobot-crest');
+        let chargeTimer = null;
+        let progress = 0;
+        const totalLength = 502; // 2 * PI * 80
+
+        function beginCharge(e) {
+            e.preventDefault();
+            startChargeSound();
+            chargeStatus.innerText = "CHARGING MATRIX OF LEADERSHIP...";
+            chargeStatus.style.color = "#ffbe0b";
+            crest.style.transform = "scale(1.15)";
+
+            const startTime = Date.now();
+            chargeTimer = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                progress = Math.min(elapsed / 1500, 1);
+                chargeBar.style.strokeDashoffset = totalLength - (totalLength * progress);
+
+                if (progress >= 1) {
+                    clearInterval(chargeTimer);
+                    unlockTerminal();
+                }
+            }, 20);
         }
 
-        // Voice Engine for Optimus
-        function speakOptimusPrime() {
+        function cancelCharge() {
+            if (progress < 1) {
+                clearInterval(chargeTimer);
+                stopChargeSound();
+                progress = 0;
+                chargeBar.style.strokeDashoffset = totalLength;
+                chargeStatus.innerText = "[ PRESS & HOLD TO CHARGE MATRIX ]";
+                chargeStatus.style.color = "var(--matrix-cyan)";
+                crest.style.transform = "scale(1)";
+            }
+        }
+
+        chargeTrigger.addEventListener('mousedown', beginCharge);
+        window.addEventListener('mouseup', cancelCharge);
+        chargeTrigger.addEventListener('touchstart', beginCharge, {passive:false});
+        window.addEventListener('touchend', cancelCharge);
+
+        // ==========================================
+        // Speech Synthesis & Optics Sync
+        // ==========================================
+        let isCardFlipped = false;
+
+        function setOpticsTalking(speaking) {
+            const eyeL = document.getElementById('optics-l');
+            const eyeR = document.getElementById('optics-r');
+            if (speaking) {
+                eyeL.classList.add('speaking-optics');
+                eyeR.classList.add('speaking-optics');
+            } else {
+                eyeL.classList.remove('speaking-optics');
+                eyeR.classList.remove('speaking-optics');
+            }
+        }
+
+        function speakCurrentSide() {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
 
-            const speechText = "I am Optimus Prime. Transmission incoming. Twinkle, twinkle, little star. How I wonder what you are. Up above the world so high, like a diamond in the sky. Till all are one.";
+            let speechText = "";
+            if (!isCardFlipped) {
+                speechText = "I am Optimus Prime. Transmission incoming. Twinkle, twinkle, little star. How I wonder what you are. Up above the world so high, like a diamond in the sky. Till all are one.";
+            } else {
+                speechText = "Freedom is the right of all sentient beings. Balancing being an elder brother and manager isn't easy. Thank you for guarding our squad and leading from the front. Till all are one.";
+            }
+
             const utterance = new SpeechSynthesisUtterance(speechText);
-            
             const voices = window.speechSynthesis.getVoices();
             const deepVoice = voices.find(v => (v.name.includes('David') || v.name.includes('Male') || v.name.includes('Daniel') || v.name.includes('Alex')) && v.lang.startsWith('en'));
             if (deepVoice) utterance.voice = deepVoice;
 
             utterance.pitch = 0.45;
-            utterance.rate = 0.78;
+            utterance.rate = 0.8;
             utterance.volume = 1;
 
-            playChestHum(9.0);
+            utterance.onstart = () => setOpticsTalking(true);
+            utterance.onend = () => setOpticsTalking(false);
+            utterance.onerror = () => setOpticsTalking(false);
+
             window.speechSynthesis.speak(utterance);
+        }
+
+        // ==========================================
+        // Card Flip & Glitch
+        // ==========================================
+        function toggleCardFlip() {
+            const flipper = document.getElementById('card-flipper');
+            isCardFlipped = !isCardFlipped;
+            flipper.classList.toggle('flipped');
+
+            // Trigger quick glitch effect
+            const activeCard = isCardFlipped ? flipper.querySelector('.card-back') : flipper.querySelector('.card-front');
+            activeCard.classList.add('glitch-active');
+            setTimeout(() => activeCard.classList.remove('glitch-active'), 350);
+
+            speakCurrentSide();
+        }
+
+        // ==========================================
+        // Unlock Sequence
+        // ==========================================
+        function unlockTerminal() {
+            stopChargeSound();
+            playBlastSound();
+
+            document.getElementById('unlock-core').classList.add('dismiss-core');
+            document.getElementById('door-left').classList.add('open-left');
+            document.getElementById('door-right').classList.add('open-right');
+
+            setTimeout(() => {
+                document.getElementById('optimus-scene').classList.add('revealed');
+                speakCurrentSide();
+            }, 600);
         }
 
         // 3D Parallax Tilt
@@ -484,7 +735,7 @@
             scene.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
         });
 
-        // Ambient Background Sparks
+        // Ambient Sparks
         const canvas = document.getElementById('spark-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -516,19 +767,6 @@
             requestAnimationFrame(loop);
         }
         loop();
-
-        // Unlock Sequence
-        function unlockTerminal() {
-            playUnlockSound();
-            document.getElementById('unlock-core').classList.add('dismiss-core');
-            document.getElementById('door-left').classList.add('open-left');
-            document.getElementById('door-right').classList.add('open-right');
-
-            setTimeout(() => {
-                document.getElementById('optimus-scene').classList.add('revealed');
-                speakOptimusPrime();
-            }, 600);
-        }
     </script>
 </body>
 </html>
