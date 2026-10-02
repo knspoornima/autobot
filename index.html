@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPTIMUS PRIME // TRANSMISSION</title>
+    <title>OPTIMUS PRIME // MESSAGE CARD</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --optimus-blue: #0088ff;
-            --optimus-red: #d90429;
+            --prime-blue: #0077ff;
+            --prime-red: #e61919;
             --matrix-cyan: #00f0ff;
-            --metal-dark: #0a0d14;
-            --card-glass: rgba(10, 18, 30, 0.88);
+            --gold: #ffbe0b;
+            --metal-bg: #07090e;
         }
 
         * {
@@ -25,19 +25,19 @@
         }
 
         body {
-            background-color: var(--metal-dark);
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--matrix-cyan);
+            background-color: var(--metal-bg);
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1100px;
+            perspective: 1000px;
         }
 
-        /* Ambient Cyber-Sparks */
+        /* Ambient floating particles */
         #spark-canvas {
             position: fixed;
             top: 0;
@@ -48,42 +48,44 @@
             pointer-events: none;
         }
 
-        /* Scanlines */
         .scanlines {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%),
-                        radial-gradient(circle, transparent 60%, black 140%);
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+                        radial-gradient(circle, transparent 65%, black 140%);
             background-size: 100% 4px, 100% 100%;
             pointer-events: none;
             z-index: 99;
         }
 
-        /* Blast Doors */
+        /* Heavy Blast Doors */
         .door {
             position: fixed;
             top: 0;
             width: 50vw;
             height: 100vh;
-            background: linear-gradient(135deg, #151b27 0%, #080c14 100%);
-            border-right: 3px solid var(--optimus-blue);
+            background: linear-gradient(135deg, #131926 0%, #080c14 100%);
+            border-right: 3px solid var(--prime-blue);
             z-index: 50;
             transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+            display: flex;
+            align-items: center;
         }
         #door-left { left: 0; }
-        #door-right { right: 0; border-right: none; border-left: 3px solid var(--optimus-blue); }
+        #door-right { right: 0; border-right: none; border-left: 3px solid var(--prime-blue); }
+
         .hazard-stripe {
             position: absolute;
             bottom: 0;
             width: 100%;
             height: 14px;
-            background: repeating-linear-gradient(45deg, #ffb703, #ffb703 15px, #111 15px, #111 30px);
+            background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 15px, #111 15px, #111 30px);
         }
 
-        /* Lock Core */
+        /* Central Lock Core */
         #unlock-core {
             position: fixed;
             z-index: 60;
@@ -95,7 +97,7 @@
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
-        .matrix-ring {
+        .crest-ring {
             width: 170px;
             height: 170px;
             border-radius: 50%;
@@ -104,14 +106,14 @@
             justify-content: center;
             align-items: center;
             animation: spin 16s linear infinite;
-            box-shadow: 0 0 35px rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.35);
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         #autobot-crest {
-            width: 90px;
-            height: 90px;
+            width: 95px;
+            height: 95px;
             background-color: var(--matrix-cyan);
             mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
             -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
@@ -124,37 +126,45 @@
             to { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 28px #fff); }
         }
 
-        /* Main Scene: Optimus Holding Card */
+        /* 3D Scene Wrapper */
         #optimus-scene {
             position: relative;
             z-index: 10;
-            width: 95vw;
-            max-width: 860px;
+            width: 92vw;
+            max-width: 680px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: transform 0.15s ease-out;
             transform-style: preserve-3d;
+            transition: transform 0.2s ease-out;
+            opacity: 0;
+            transform: scale(0.85);
+            transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s;
         }
 
-        /* Optimus Prime Upper Torso & Head Illustration */
-        .optimus-avatar-wrapper {
+        #optimus-scene.revealed {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Optimus Prime Bust */
+        .optimus-head-wrapper {
             position: relative;
-            width: 260px;
-            height: 190px;
-            margin-bottom: -35px; /* Overlaps behind the card */
+            width: 240px;
+            height: 170px;
+            margin-bottom: -32px;
             z-index: 5;
-            filter: drop-shadow(0 0 25px rgba(0, 136, 255, 0.5));
-            animation: hoverFloat 4s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 25px rgba(0, 119, 255, 0.5));
+            animation: breathing 3.5s ease-in-out infinite alternate;
         }
 
-        @keyframes hoverFloat {
+        @keyframes breathing {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-8px); }
+            100% { transform: translateY(-6px); }
         }
 
-        /* The Card Held in Hands */
-        .card-container {
+        /* Card Container & Clamping Hands */
+        .card-stage {
             position: relative;
             width: 100%;
             z-index: 10;
@@ -163,65 +173,112 @@
             justify-content: center;
         }
 
-        /* Robotic Hands Gripping Both Sides */
-        .optimus-hand {
+        .mech-hand {
             position: absolute;
-            width: 60px;
-            height: 120px;
-            z-index: 20;
-            filter: drop-shadow(0 0 10px rgba(0, 136, 255, 0.6));
+            width: 65px;
+            height: 130px;
+            z-index: 25;
+            filter: drop-shadow(0 0 12px rgba(0, 119, 255, 0.7));
+            pointer-events: none;
         }
 
-        .hand-left { left: -25px; transform: scaleX(1); }
-        .hand-right { right: -25px; transform: scaleX(-1); }
+        .hand-l { left: -26px; }
+        .hand-r { right: -26px; transform: scaleX(-1); }
 
+        /* The Message Card */
         #message-card {
             width: 100%;
-            background: var(--card-glass);
+            background: linear-gradient(165deg, rgba(14, 22, 38, 0.95) 0%, rgba(6, 10, 18, 0.95) 100%);
             border: 2px solid var(--matrix-cyan);
             border-radius: 12px;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.25), inset 0 0 25px rgba(0, 240, 255, 0.1);
-            backdrop-filter: blur(12px);
-            padding: 28px 36px;
+            box-shadow: 0 0 45px rgba(0, 240, 255, 0.25), inset 0 0 30px rgba(0, 240, 255, 0.08);
+            backdrop-filter: blur(14px);
+            padding: 36px 44px;
+            position: relative;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 22px;
+            text-align: center;
+            overflow: hidden;
         }
 
+        /* Glowing watermark crest in background of card */
+        .card-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 260px;
+            height: 260px;
+            background-color: var(--matrix-cyan);
+            mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
+            -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        /* Card Header */
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.35);
-            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            padding-bottom: 12px;
         }
 
-        .card-title {
+        .card-header span {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.05rem;
+            font-size: 0.85rem;
             letter-spacing: 2px;
+            color: var(--matrix-cyan);
             text-shadow: 0 0 8px var(--matrix-cyan);
         }
 
-        #message-box {
-            font-size: 1.25rem;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            min-height: 180px;
-            text-shadow: 0 0 6px var(--matrix-cyan);
+        /* Centered Poem Layout */
+        .poem-container {
+            position: relative;
+            z-index: 2;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        /* Audio Controls */
+        .poem-line {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.6), 0 0 24px rgba(0, 240, 255, 0.3);
+            line-height: 1.4;
+        }
+
+        .poem-highlight {
+            color: var(--gold);
+            text-shadow: 0 0 12px rgba(255, 190, 11, 0.7);
+        }
+
+        /* Card Footer & Audio Button */
         .card-footer {
+            position: relative;
+            z-index: 2;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px dashed rgba(0, 240, 255, 0.35);
-            padding-top: 14px;
+            border-top: 1px dashed rgba(0, 240, 255, 0.3);
+            padding-top: 16px;
+        }
+
+        .footer-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            color: var(--matrix-cyan);
         }
 
         .voice-btn {
-            background: rgba(0, 136, 255, 0.2);
+            background: rgba(0, 119, 255, 0.2);
             border: 1px solid var(--matrix-cyan);
             color: #fff;
             padding: 8px 16px;
@@ -240,16 +297,17 @@
             box-shadow: 0 0 20px var(--matrix-cyan);
         }
 
-        /* Transitions */
+        /* Door animation triggers */
         .open-left { transform: translateX(-100%); }
         .open-right { transform: translateX(100%); }
         .dismiss-core { opacity: 0; transform: scale(2); pointer-events: none; }
 
         @media (max-width: 600px) {
-            .hand-left { left: -15px; }
-            .hand-right { right: -15px; }
-            #message-box { font-size: 1.05rem; line-height: 1.6; }
-            .optimus-avatar-wrapper { width: 210px; height: 155px; }
+            .poem-line { font-size: 1.15rem; }
+            .optimus-head-wrapper { width: 190px; height: 140px; margin-bottom: -25px; }
+            #message-card { padding: 24px 20px; }
+            .hand-l { left: -16px; width: 45px; }
+            .hand-r { right: -16px; width: 45px; }
         }
     </style>
 </head>
@@ -258,22 +316,22 @@
     <div class="scanlines"></div>
     <canvas id="spark-canvas"></canvas>
 
-    <!-- Blast Doors -->
+    <!-- Heavy Blast Doors -->
     <div id="door-left" class="door"><div class="hazard-stripe"></div></div>
     <div id="door-right" class="door"><div class="hazard-stripe"></div></div>
 
-    <!-- Center Unlock Core -->
+    <!-- Center Tap to Unlock -->
     <div id="unlock-core" onclick="unlockTerminal()">
-        <div class="matrix-ring"><div id="autobot-crest"></div></div>
+        <div class="crest-ring"><div id="autobot-crest"></div></div>
         <h2 style="font-family:'Orbitron'; font-size:1.15rem; margin-top:20px; letter-spacing:3px;">TELETRAAN-I CLEARANCE</h2>
         <p style="font-size:0.85rem; opacity:0.85; margin-top:6px; animation: pulse 1s infinite alternate;">[ TAP TO SUMMON OPTIMUS PRIME ]</p>
     </div>
 
-    <!-- Optimus Scene -->
+    <!-- The 3D Scene -->
     <div id="optimus-scene">
         
         <!-- Optimus Prime Bust SVG -->
-        <div class="optimus-avatar-wrapper">
+        <div class="optimus-head-wrapper">
             <svg viewBox="0 0 200 150" width="100%" height="100%">
                 <defs>
                     <linearGradient id="primeBlue" x1="0" y1="0" x2="1" y2="1">
@@ -294,156 +352,139 @@
                 <polygon points="10,150 45,95 85,95 85,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
                 <polygon points="190,150 155,95 115,95 115,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
                 
-                <!-- Truck Windshield Windows (Chest) -->
-                <rect x="52" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
-                <rect x="106" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5" opacity="0.9"/>
-                <line x1="97" y1="100" x2="103" y2="100" stroke="#bbb" stroke-width="3"/>
+                <!-- Truck Windshield Windows -->
+                <rect x="52" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
+                <rect x="106" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
                 <rect x="92" y="125" width="16" height="25" fill="#444" stroke="#888" stroke-width="1"/>
 
-                <!-- Helmet & Antennae (Head) -->
-                <!-- Side fins -->
+                <!-- Helmet & Head Fins -->
                 <polygon points="62,15 72,55 60,65 52,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
                 <polygon points="138,15 128,55 140,65 148,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
-                <!-- Center Crest -->
                 <polygon points="95,10 105,10 102,40 98,40" fill="#00aaff"/>
                 <rect x="70" y="32" width="60" height="38" rx="4" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="2"/>
 
-                <!-- Glowing Optics (Eyes) -->
-                <rect x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 4px #00f0ff)"/>
-                <rect x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 4px #00f0ff)"/>
+                <!-- Glowing Optics -->
+                <rect x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
+                <rect x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
 
-                <!-- Mouth Plate -->
-                <polygon points="82,58 118,58 112,82 88,82" fill="#a0aec0" stroke="#fff" stroke-width="1.5"/>
-                <line x1="90" y1="68" x2="110" y2="68" stroke="#4a5568" stroke-width="2"/>
-                <line x1="94" y1="74" x2="106" y2="74" stroke="#4a5568" stroke-width="2"/>
+                <!-- Silver Mouth Plate -->
+                <polygon points="82,58 118,58 112,82 88,82" fill="#cbd5e1" stroke="#fff" stroke-width="1.5"/>
+                <line x1="90" y1="68" x2="110" y2="68" stroke="#64748b" stroke-width="2"/>
+                <line x1="94" y1="74" x2="106" y2="74" stroke="#64748b" stroke-width="2"/>
             </svg>
         </div>
 
-        <!-- The Message Card Framed by Optimus's Hands -->
-        <div class="card-container">
+        <!-- The Message Card Gripped by Hands -->
+        <div class="card-stage">
             
-            <!-- Left Hand SVG -->
-            <svg class="optimus-hand hand-left" viewBox="0 0 50 100">
-                <rect x="5" y="20" width="30" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
-                <!-- Knuckles -->
-                <rect x="25" y="25" width="18" height="12" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
-                <rect x="25" y="40" width="18" height="12" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
-                <rect x="25" y="55" width="18" height="12" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
-                <rect x="25" y="70" width="16" height="10" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
+            <!-- Left Hand Clamping Card -->
+            <svg class="mech-hand hand-l" viewBox="0 0 50 100">
+                <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
+                <!-- Knuckles overlapping card border -->
+                <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
             </svg>
 
-            <!-- Card Content -->
+            <!-- Cleanly Formatted Message Plaque -->
             <div id="message-card">
+                <div class="card-watermark"></div>
+
                 <div class="card-header">
-                    <span class="card-title">TRANSMISSION // OPTIMUS PRIME</span>
-                    <span style="font-size:0.75rem; color:#ffb703;">SECURE AUDIO LINK</span>
+                    <span>TRANSMISSION // OPTIMUS PRIME</span>
+                    <span style="color:var(--gold);">SECTOR 7 CELESTIAL ARCHIVE</span>
                 </div>
 
-                <div id="message-box"></div>
+                <div class="poem-container">
+                    <p class="poem-line">Twinkle, twinkle, little star,</p>
+                    <p class="poem-line poem-highlight">How I wonder what you are!</p>
+                    <p class="poem-line">Up above the world so high,</p>
+                    <p class="poem-line poem-highlight">Like a diamond in the sky.</p>
+                </div>
 
                 <div class="card-footer">
                     <button class="voice-btn" onclick="speakOptimusPrime()">🔊 REPLAY OPTIMUS VOICE</button>
-                    <span style="font-size:0.75rem; opacity:0.8;">TILL ALL ARE ONE</span>
+                    <span class="footer-tag">TILL ALL ARE ONE</span>
                 </div>
             </div>
 
-            <!-- Right Hand SVG -->
-            <svg class="optimus-hand hand-right" viewBox="0 0 50 100">
-                <rect x="5" y="20" width="30" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
-                <rect x="25" y="25" width="18" height="12" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
-                <rect x="25" y="40" width="18" height="12" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
-                <rect x="25" y="55" width="18" height="12" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
-                <rect x="25" y="70" width="16" height="10" rx="3" fill="#cbd5e1" stroke="#003366" stroke-width="1.5"/>
+            <!-- Right Hand Clamping Card -->
+            <svg class="mech-hand hand-r" viewBox="0 0 50 100">
+                <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
+                <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
             </svg>
 
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // Sound & Robotic Voice Synthesizer
-        // ==========================================
+        // Web Audio Synthesizer
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        function playSound(type) {
+        function playUnlockSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            if (type === 'unlock') {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.35);
-                osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.9);
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.9);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.9);
-            } else if (type === 'beep') {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(1400 + Math.random() * 300, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.04);
-            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(110, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(750, audioCtx.currentTime + 0.35);
+            osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.9);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.9);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.9);
         }
 
-        // Bass Drone for Optimus Voice Resonance
-        function startChestHum(durationSec) {
+        function playChestHum(durationSec) {
             try {
-                const humOsc = audioCtx.createOscillator();
-                const humGain = audioCtx.createGain();
-                humOsc.type = 'triangle';
-                humOsc.frequency.setValueAtTime(85, audioCtx.currentTime); // Low chest harmonic
-                humGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                humGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + durationSec);
-                humOsc.connect(humGain);
-                humGain.connect(audioCtx.destination);
-                humOsc.start();
-                humOsc.stop(audioCtx.currentTime + durationSec);
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + durationSec);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + durationSec);
             } catch(e) {}
         }
 
-        // Optimus Voice Reader
+        // Voice Engine for Optimus
         function speakOptimusPrime() {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
 
-            const speechText = "I am Optimus Prime. Transmission incoming. Twinkle, twinkle, little star. How I wonder what you are. Up above the world so high, like a diamond in the sky.";
+            const speechText = "I am Optimus Prime. Transmission incoming. Twinkle, twinkle, little star. How I wonder what you are. Up above the world so high, like a diamond in the sky. Till all are one.";
             const utterance = new SpeechSynthesisUtterance(speechText);
             
-            // Choose deep English male voice if available
             const voices = window.speechSynthesis.getVoices();
             const deepVoice = voices.find(v => (v.name.includes('David') || v.name.includes('Male') || v.name.includes('Daniel') || v.name.includes('Alex')) && v.lang.startsWith('en'));
             if (deepVoice) utterance.voice = deepVoice;
 
-            utterance.pitch = 0.45; // Deep Optimus pitch
-            utterance.rate = 0.78;  // Deliberate cadence
+            utterance.pitch = 0.45;
+            utterance.rate = 0.78;
             utterance.volume = 1;
 
-            startChestHum(9.5); // Add mech chest vibration
+            playChestHum(9.0);
             window.speechSynthesis.speak(utterance);
         }
 
-        // ==========================================
-        // 3D Tilt HUD (Mouse & Gyroscope)
-        // ==========================================
+        // 3D Parallax Tilt
         const scene = document.getElementById('optimus-scene');
         document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 50;
-            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            const x = (window.innerWidth / 2 - e.pageX) / 45;
+            const y = (window.innerHeight / 2 - e.pageY) / 45;
             scene.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
         });
 
-        // ==========================================
-        // Ambient Sparks
-        // ==========================================
+        // Ambient Background Sparks
         const canvas = document.getElementById('spark-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -476,50 +517,17 @@
         }
         loop();
 
-        // ==========================================
-        // Matrix Scramble Decryption
-        // ==========================================
-        const noteText = `TRANSMISSION DECRYPTED // SECTOR 7
-
-Twinkle, twinkle, little star,
-How I wonder what you are!
-Up above the world so high,
-Like a diamond in the sky.
-
-// DECODING COMPLETE //
-// TILL ALL ARE ONE. //`;
-
-        function matrixDecode(element, text) {
-            const chars = '01#@%&*<>{}[]+=~¥§';
-            let index = 0;
-            const interval = setInterval(() => {
-                let displayed = text.substring(0, index);
-                for (let k = 0; k < 3 && (index + k) < text.length; k++) {
-                    displayed += (text[index + k] === '\n') ? '\n' : chars[Math.floor(Math.random() * chars.length)];
-                }
-                element.innerText = displayed;
-                if (index % 3 === 0) playSound('beep');
-                index++;
-                if (index > text.length) {
-                    clearInterval(interval);
-                    element.innerText = text;
-                }
-            }, 30);
-        }
-
-        // ==========================================
         // Unlock Sequence
-        // ==========================================
         function unlockTerminal() {
-            playSound('unlock');
+            playUnlockSound();
             document.getElementById('unlock-core').classList.add('dismiss-core');
             document.getElementById('door-left').classList.add('open-left');
             document.getElementById('door-right').classList.add('open-right');
 
             setTimeout(() => {
-                matrixDecode(document.getElementById('message-box'), noteText);
+                document.getElementById('optimus-scene').classList.add('revealed');
                 speakOptimusPrime();
-            }, 1200);
+            }, 600);
         }
     </script>
 </body>
