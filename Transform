@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONFIDENTIAL TRANSMISSION: DECODED</title>
+    <!-- Importing futuristic fonts from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS 1: Structural Foundations and Colors */
+        :root {
+            --bg-dark: #0b0e14; /* Dark metal */
+            --autobot-blue: #00d2ff; /* Glowing Cyan */
+            --glowing-text: #00f2fe;
+            --border-panel: rgba(0, 210, 255, 0.4);
+            --grid-line: rgba(0, 210, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent; /* Clean mobile taps */
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Share Tech Mono', monospace; /* Futuristic type */
+            color: var(--glowing-text);
+            overflow: hidden; /* Prevent scrolling during lock/transition */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            user-select: none; /* Prevents text selection chaos */
+        }
+
+        /* Standardized Glowing Text (Cybertronian Look) */
+        .cyber-glow {
+            text-shadow: 0 0 5px var(--autobot-blue), 0 0 10px var(--autobot-blue), 0 0 15px var(--autobot-blue);
+        }
+
+        /* Hidden Class for State Transitions */
+        .hidden { display: none !important; }
+
+        /* ============================================================ */
+        /* CSS 2: The Lock Screen / Welcome Terminal */
+        /* ============================================================ */
+        #unlock-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 1s ease-out, transform 0.8s ease-in-out;
+        }
+
+        /* Pulsing Glow Animation for the Lock Screen Crest */
+        @keyframes pulseGlow {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 15px var(--autobot-blue);
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+                box-shadow: 0 0 40px var(--autobot-blue), 0 0 60px var(--autobot-blue);
+            }
+        }
+
+        /* This is the interactive center 'lock' crest (mockup shape) */
+        #autobot-crest {
+            width: 150px;
+            height: 150px;
+            background-color: var(--autobot-blue);
+            mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
+            -webkit-mask: url('https://upload.wikimedia.org/wikipedia/commons/e/e0/Autobot.svg') no-repeat center;
+            animation: pulseGlow 2.5s infinite;
+            margin-bottom: 30px;
+        }
+
+        #unlock-screen h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        #unlock-screen .blink {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0.2; }
+        }
+
+        /* State after unlocking: screen fades and shrinks */
+        #unlock-screen.unlocked {
+            opacity: 0;
+            transform: scale(0.5) rotateX(90deg);
+            pointer-events: none;
+        }
+
+        /* ============================================================ */
+        /* CSS 3: The Unlocked Terminal / Dashboard */
+        /* ============================================================ */
+        #terminal-dashboard {
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            z-index: 1;
+            /* Initial state (will become visible via JS) */
+            opacity: 0;
+            transform: scale(1.2);
+            transition: opacity 1.5s ease 0.5s, transform 1s ease 0.5s; /* Delay it until lockscreen clears */
+        }
+
+        #terminal-dashboard.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Main Note Display Area */
+        #main-message-panel {
+            flex-grow: 1;
+            background-color: rgba(0, 210, 255, 0.05); /* Slight panel tint */
+            border: 2px solid var(--border-panel);
+            border-radius: 8px;
+            box-shadow: 0 0 20px var(--glowing-text);
+            padding: 30px;
+            overflow-y: auto; /* Scrollable note content */
+            position: relative;
+        }
+
+        /* Subtitle/Header */
+        .transmission-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--autobot-blue);
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border-panel);
+            padding-bottom: 10px;
+        }
+
+        /* Typewriter Effect (Managed via JS) */
+        #decoding-text {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+
+        /* The animated 'Decoding' cursor */
+        #decoding-text::after {
+            content: "|";
+            display: inline-block;
+            margin-left: 2px;
+            animation: blinker 0.6s step-end infinite;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- INTERACTIVE SCREEN 1: THE LOCKED TERMINAL (Biometric Scan) -->
+    <!-- ============================================================ -->
+    <div id="unlock-screen" class="visible" onclick="initializeAutobotTerminal()">
+        
+        <!-- Center Pulsing Autobot Crest (Mockup Icon) -->
+        <div id="autobot-crest"></div>
+
+        <h1 class="cyber-glow">AUTOBOT TERMINAL v3.8</h1>
+        <p class="blink">SCANNING FOR BIOMETRIC PROTOCOL...</p>
+        <p style="margin-top: 20px; color: var(--border-panel); font-size: 0.9rem;">(Click to Initialize)</p>
+
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- INTERACTIVE SCREEN 2: THE UNLOCKED TERMINAL (Thank You Note) -->
+    <!-- ============================================================ -->
+    <div id="terminal-dashboard">
+        
+        <div id="main-message-panel">
+            
+            <div class="transmission-header cyber-glow">CONFIDENTIAL: AUTOBOT HIGH COMMAND</div>
+
+            <!-- This div will hold the typewriter/decoding text -->
+            <div id="decoding-text"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================================ -->
+    <!-- JS Logic: Transitions and the Decoding/Typewriter Effect -->
+    <!-- ============================================================ -->
+    <script>
+        // 1. The Script (Your Tribute Text)
+        // \n creates new lines in the output.
+        const thankYouMessage = `TO: Commander Prime (Brother / Manager)
+FROM: Your Most Reliable Recruit
+ENCRYPTION PROTOCOL: Till All Are One
+
+STATUS REPORT:
+
+"Freedom is the right of all sentient beings...
+but sane management is a rare miracle."
+
+Navigating daily battles is manageable only because
+you’re at the helm. Balancing the role of a brother
+and a manager isn't an easy protocol—it means
+backing me up like Ironhide in the field, while keeping
+me aligned like Prowl when I start scheming like Starscream.
+
+Thank you for:
+- Shielding the team from unnecessary chaos.
+- Pushing me to upgrade my own specs rather than staying in vehicle mode.
+- Always being in my corner—both in standups and across family tables.
+
+You are living proof that true leaders don’t just command;
+they transform the people around them.
+
+Till all are one.
+-[Your Name]
+
+// DECODING COMPLETE //
+// TRANSMISSION TERMINATED. ROLL OUT. //`;
+
+        // 2. JS: Function to Handle the Terminal Initialization (Unlocking)
+        function initializeAutobotTerminal() {
+            // Get screen references
+            const lockScreen = document.getElementById('unlock-screen');
+            const dashboard = document.getElementById('terminal-dashboard');
+            const textPanel = document.getElementById('decoding-text');
+
+            // Sound Hook: We *could* play the transformation sound here, but browsers block auto-play.
+            // A click transition is the easiest way.
+
+            // a. Transition State 1: Lock screen vanishes
+            lockScreen.classList.add('unlocked');
+            
+            // b. Transition State 2: Dashboard appears
+            // Using setTimeout ensures the CSS transition timings line up.
+            setTimeout(() => {
+                lockScreen.classList.add('hidden'); // Fully remove from view
+                dashboard.classList.add('visible'); // Fade the dashboard in
+                
+                // c. State 3: Begin the typewriter effect
+                startDecodingTypewriter(textPanel, thankYouMessage, 35); // Adjust typing speed here (ms per char)
+
+            }, 800); // This timing must match the CSS transition duration (0.8s)
+        }
+
+        // 3. JS: Standard Typewriter/Decoding Effect
+        function startDecodingTypewriter(element, text, speed) {
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                }
+            }, speed);
+        }
+
+    </script>
+</body>
+</html>
