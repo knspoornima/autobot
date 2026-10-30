@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUTOBOT EXPEDITION // TELETRAAN-I AI</title>
+    <title>AUTOBOT EXPEDITION // LIVE GEMINI AI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
@@ -265,7 +265,7 @@
         }
         .matrix-core-artifact:hover { transform: scale(1.08); }
 
-        /* Stage 5: Optimus & AI Chat */
+        /* Stage 5: Optimus & Live AI Chat */
         .optimus-scene {
             display: flex; flex-direction: column; align-items: center; width: 100%;
             transform-style: preserve-3d; transition: transform 0.2s ease-out;
@@ -367,4 +367,532 @@
             .card-face { padding: 18px; }
             .hand-l { left: -14px; width: 40px; }
             .hand-r { right: -14px; width: 40px; }
-            .optim
+            .optimus-head-wrapper { width: 180px; height: 130px; margin-bottom: -20px; }
+        }
+    </style>
+</head>
+<body id="screen-body">
+
+    <div class="scanlines"></div>
+    <canvas id="spark-canvas"></canvas>
+
+    <!-- Heavy Blast Doors -->
+    <div id="door-left" class="door"><div class="hazard-stripe"></div></div>
+    <div id="door-right" class="door"><div class="hazard-stripe"></div></div>
+
+    <!-- STAGE 1: SIGNAL FREQUENCY TUNER -->
+    <div id="stage-1" class="stage-container">
+        <div class="tuner-box">
+            <h2 style="font-family:'Orbitron'; letter-spacing:2px; color:var(--matrix-cyan);">COMM CHANNEL JAMMED</h2>
+            <p style="margin-top:6px; opacity:0.85;">Decepticon interference detected. Align tuner to target frequency: <strong>84.0 MHz</strong></p>
+            
+            <div class="freq-display" id="freq-val">80.0 <span style="font-size:1.2rem;">MHz</span></div>
+            
+            <div class="slider-wrapper" style="margin:20px 0;">
+                <input type="range" id="freq-slider" min="80.0" max="90.0" step="0.1" value="80.0" oninput="tuneFrequency(this.value)">
+            </div>
+
+            <p id="lock-hint" style="color:var(--gold); font-size:0.95rem; font-weight:700;">[ SLIDE TO MATCH 84.0 MHz ]</p>
+            <button id="stage1-btn" class="hud-btn" disabled onclick="unlockStage1()">INITIATE SPACE BRIDGE</button>
+        </div>
+    </div>
+
+    <!-- STAGE 2: TACTICAL STAR MAP -->
+    <div id="stage-2" class="stage-container hidden-stage">
+        <div class="star-map-box">
+            <div class="map-header">
+                <span style="font-family:'Orbitron'; font-size:0.9rem; color:var(--matrix-cyan);">TACTICAL STAR MAP // SECTOR ALPHA</span>
+                <span style="font-family:'Orbitron'; font-size:0.9rem; color:var(--gold);">ENERGON: <span id="core-count">0</span> / 4</span>
+            </div>
+
+            <p style="font-size:0.85rem; opacity:0.85; margin-bottom:12px;">Tap all 4 coordinate beacons to retrieve shared memory files and harvest energon cores:</p>
+
+            <div class="star-canvas-area">
+                <div class="beacon" style="top:25%; left:20%;" onclick="openMemory(0)"><span>1</span></div>
+                <div class="beacon" style="top:70%; left:35%;" onclick="openMemory(1)"><span>2</span></div>
+                <div class="beacon" style="top:30%; left:75%;" onclick="openMemory(2)"><span>3</span></div>
+                <div class="beacon" style="top:75%; left:80%;" onclick="openMemory(3)"><span>4</span></div>
+            </div>
+
+            <div style="text-align:center; margin-top:14px;">
+                <button id="stage2-btn" class="hud-btn" disabled onclick="goToStage3()">ENGAGE VECTOR SIGMA CALIBRATION</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Memory Modal -->
+    <div id="memory-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title" style="font-family:'Orbitron'; color:var(--gold); margin-bottom:10px;"></h3>
+            <p id="modal-desc" style="font-size:1.1rem; line-height:1.6; margin-bottom:20px; color:#e2e8f0;"></p>
+            <button class="hud-btn" onclick="collectCore()">EXTRACT ENERGON CORE</button>
+        </div>
+    </div>
+
+    <!-- STAGE 3: VECTOR SIGMA SPARK QUIZ -->
+    <div id="stage-3" class="stage-container hidden-stage">
+        <div class="quiz-box">
+            <span style="font-family:'Orbitron'; font-size:0.8rem; color:var(--gold);">VECTOR SIGMA SPARK CALIBRATION</span>
+            <h3 id="quiz-question" style="font-family:'Orbitron'; font-size:1.2rem; margin:16px 0; color:var(--matrix-cyan);"></h3>
+            
+            <div class="quiz-options" id="quiz-options"></div>
+            <div id="quiz-status" style="font-size:0.9rem; color:var(--gold);"></div>
+        </div>
+    </div>
+
+    <!-- STAGE 4: MATRIX OF LEADERSHIP UNLATCH -->
+    <div id="stage-4" class="stage-container hidden-stage">
+        <div class="matrix-unlatch-box">
+            <h2 style="font-family:'Orbitron'; color:var(--gold); letter-spacing:2px;">THE MATRIX OF LEADERSHIP</h2>
+            <p style="margin:8px 0 20px; opacity:0.85;">Tap the Matrix core to release the Spark of Primus:</p>
+
+            <div class="matrix-core-artifact" onclick="openMatrix()" title="Click to Unleash Matrix">
+                <svg viewBox="0 0 200 130" width="100%" height="100%">
+                    <path d="M 30,65 C 10,20 10,110 30,65" fill="none" stroke="#ffbe0b" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M 170,65 C 190,20 190,110 170,65" fill="none" stroke="#ffbe0b" stroke-width="8" stroke-linecap="round"/>
+                    <ellipse cx="100" cy="65" rx="60" ry="38" fill="#1e293b" stroke="#ffbe0b" stroke-width="4"/>
+                    <circle cx="100" cy="65" r="24" fill="#00f0ff" filter="drop-shadow(0 0 15px #00f0ff)"/>
+                </svg>
+            </div>
+
+            <button class="hud-btn" onclick="openMatrix()">UNLEASH THE MATRIX</button>
+        </div>
+    </div>
+
+    <!-- STAGE 5: OPTIMUS TRANSMISSION, CARD & LIVE GEMINI AI CHAT -->
+    <div id="stage-5" class="stage-container hidden-stage">
+        <div class="optimus-scene" id="optimus-scene">
+            
+            <!-- Optimus Prime Bust SVG -->
+            <div class="optimus-head-wrapper">
+                <svg viewBox="0 0 200 150" width="100%" height="100%">
+                    <defs>
+                        <linearGradient id="primeBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0066cc"/><stop offset="100%" stop-color="#002b66"/></linearGradient>
+                        <linearGradient id="primeRed" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e61919"/><stop offset="100%" stop-color="#800000"/></linearGradient>
+                        <linearGradient id="windowGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00f0ff"/><stop offset="100%" stop-color="#005577"/></linearGradient>
+                    </defs>
+
+                    <polygon points="10,150 45,95 85,95 85,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
+                    <line x1="25" y1="140" x2="50" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    <polygon points="190,150 155,95 115,95 115,150" fill="url(#primeRed)" stroke="#ff4d4d" stroke-width="2"/>
+                    <line x1="175" y1="140" x2="150" y2="110" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    
+                    <rect x="52" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
+                    <rect x="106" y="105" width="42" height="38" rx="3" fill="url(#windowGlow)" stroke="#fff" stroke-width="1.5"/>
+
+                    <polygon points="62,15 72,55 60,65 52,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
+                    <polygon points="138,15 128,55 140,65 148,30" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="1.5"/>
+                    <polygon points="95,10 105,10 102,40 98,40" fill="#00aaff"/>
+                    <rect x="70" y="32" width="60" height="38" rx="4" fill="url(#primeBlue)" stroke="#00aaff" stroke-width="2"/>
+
+                    <rect id="optics-l" x="80" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
+                    <rect id="optics-r" x="105" y="46" width="15" height="5" rx="2" fill="#00f0ff" filter="drop-shadow(0 0 5px #00f0ff)"/>
+
+                    <polygon points="82,58 118,58 112,82 88,82" fill="#cbd5e1" stroke="#fff" stroke-width="1.5"/>
+                </svg>
+            </div>
+
+            <!-- Card Stage Gripped by Hands -->
+            <div class="card-stage">
+                
+                <svg class="mech-hand hand-l" viewBox="0 0 50 100">
+                    <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
+                    <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                </svg>
+
+                <div class="card-flipper" id="card-flipper">
+                    
+                    <!-- FRONT: Poem -->
+                    <div class="card-face card-front">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(0,240,255,0.3); padding-bottom:6px;">
+                            <span style="font-family:'Orbitron'; font-size:0.8rem; color:var(--matrix-cyan);">CELESTIAL BEACON</span>
+                            <span style="color:var(--gold); font-size:0.8rem;">SECTOR 7</span>
+                        </div>
+
+                        <div>
+                            <p class="poem-line">Twinkle, twinkle, little star,</p>
+                            <p class="poem-line poem-highlight">How I wonder what you are!</p>
+                            <p class="poem-line">Up above the world so high,</p>
+                            <p class="poem-line poem-highlight">Like a diamond in the sky.</p>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed rgba(0,240,255,0.3); padding-top:8px;">
+                            <button class="hud-btn" style="margin:0; font-size:0.7rem;" onclick="toggleCardFlip()">🔄 FLIP: PERSONAL ARCHIVE</button>
+                            <button class="hud-btn" style="margin:0; font-size:0.7rem;" onclick="speakCurrentSide()">🔊 VOICE</button>
+                        </div>
+                    </div>
+
+                    <!-- BACK: Personal Note + Live Gemini AI Terminal -->
+                    <div class="card-face card-back">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(0,240,255,0.3); padding-bottom:4px;">
+                            <span style="font-family:'Orbitron'; font-size:0.75rem; color:var(--matrix-cyan);">CLASSIFIED</span>
+                            <span style="color:var(--matrix-cyan); font-family:'Orbitron'; font-size:0.75rem;">BROTHER</span>
+                        </div>
+
+                        <div class="personal-note">
+                            <p style="font-size:0.95rem; font-weight:700; color:var(--gold);">"Autobots, transform and roll out!"</p>
+                            <p style="font-size:0.9rem; margin-top:2px;">Having you as my brother makes every mission easier. Thank you for always having my back. Till all are one!</p>
+                        </div>
+
+                        <!-- Live Gemini AI Terminal -->
+                        <div class="ai-chat-box">
+                            <div style="font-family:'Orbitron'; font-size:0.7rem; color:var(--gold);">TELETRAAN-I LIVE GEMINI AI (ASK OPTIMUS)</div>
+                            <div class="ai-log" id="ai-log">OPTIMUS: Live neural link active. Ask me anything, brother.</div>
+                            <div class="ai-input-row">
+                                <input type="text" class="ai-input" id="ai-user-input" placeholder="Ask Optimus anything..." onkeydown="if(event.key==='Enter') sendAIQuery()">
+                                <button class="hud-btn" style="margin:0; padding:4px 10px; font-size:0.7rem;" onclick="sendAIQuery()">TRANSMIT</button>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed rgba(0,240,255,0.3); padding-top:6px;">
+                            <button class="hud-btn" style="margin:0; font-size:0.7rem;" onclick="toggleCardFlip()">🔄 FLIP: BEACON</button>
+                            <button class="hud-btn" style="margin:0; font-size:0.7rem;" onclick="speakCurrentSide()">🔊 VOICE</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <svg class="mech-hand hand-r" viewBox="0 0 50 100">
+                    <rect x="4" y="20" width="28" height="60" rx="8" fill="#0055b3" stroke="#00f0ff" stroke-width="2"/>
+                    <rect x="22" y="24" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="39" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="54" width="20" height="12" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                    <rect x="22" y="69" width="18" height="10" rx="3" fill="#e2e8f0" stroke="#003366" stroke-width="1.5"/>
+                </svg>
+
+            </div>
+
+            <button class="hud-btn" style="border-color:#ff4444; color:#ff8888; margin-top:15px;" onclick="terminateTransmission()">⚡ TERMINATE UPLINK</button>
+        </div>
+    </div>
+
+    <!-- Final Shutdown Display -->
+    <div id="final-screen" class="stage-container hidden-stage" style="text-align:center;">
+        <h2 style="font-family:'Orbitron'; letter-spacing:3px; color:var(--matrix-cyan);">TRANSMISSION TERMINATED</h2>
+        <p style="color:var(--gold); margin-top:12px; font-family:'Orbitron';">TILL ALL ARE ONE.</p>
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            if (type === 'lock') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'door') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.9);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.9);
+            } else if (type === 'chime') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1046.5, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+            }
+        }
+
+        // STAGE 1: Frequency Tuner
+        function tuneFrequency(val) {
+            document.getElementById('freq-val').innerHTML = `${parseFloat(val).toFixed(1)} <span style="font-size:1.2rem;">MHz</span>`;
+            if (Math.abs(val - 84.0) < 0.25) {
+                document.getElementById('lock-hint').innerText = "SIGNAL LOCKED // AUTOBOT FREQUENCY VERIFIED";
+                document.getElementById('lock-hint').style.color = "#00f0ff";
+                document.getElementById('stage1-btn').disabled = false;
+                playSound('lock');
+            } else {
+                document.getElementById('lock-hint').innerText = "[ SLIDE TO MATCH 84.0 MHz ]";
+                document.getElementById('lock-hint').style.color = "var(--gold)";
+                document.getElementById('stage1-btn').disabled = true;
+            }
+        }
+
+        function unlockStage1() {
+            playSound('door');
+            document.getElementById('stage-1').classList.add('hidden-stage');
+            document.getElementById('door-left').classList.add('open-left');
+            document.getElementById('door-right').classList.add('open-right');
+
+            setTimeout(() => {
+                document.getElementById('stage-2').classList.remove('hidden-stage');
+            }, 600);
+        }
+
+        // STAGE 2: Star Map & Memories
+        const memoryData = [
+            { title: "ORIGIN COORDINATES", desc: "Where our journey began. Growing up together, facing the early chaos, and building an unbreakable bond." },
+            { title: "THE CRUCIBLE SECTOR", desc: "Every time a heavy challenge hit the frontline, you stood strong as the shield and guided the way forward." },
+            { title: "OFF-DUTY SECTOR", desc: "All the laughs, shared inside jokes, and daily banter that make our squad truly one of a kind." },
+            { title: "CURRENT ORBIT", desc: "Standing together today—stronger than ever, ready for whatever mission comes next across the stars." }
+        ];
+
+        let collectedCores = 0;
+        let currentMemoryIdx = null;
+        const visitedBeacons = [false, false, false, false];
+
+        function openMemory(index) {
+            currentMemoryIdx = index;
+            document.getElementById('modal-title').innerText = memoryData[index].title;
+            document.getElementById('modal-desc').innerText = memoryData[index].desc;
+            document.getElementById('memory-modal').classList.add('active');
+        }
+
+        function collectCore() {
+            document.getElementById('memory-modal').classList.remove('active');
+            if (!visitedBeacons[currentMemoryIdx]) {
+                visitedBeacons[currentMemoryIdx] = true;
+                collectedCores++;
+                playSound('chime');
+                document.getElementById('core-count').innerText = collectedCores;
+                document.querySelectorAll('.beacon')[currentMemoryIdx].classList.add('collected');
+
+                if (collectedCores === 4) {
+                    document.getElementById('stage2-btn').disabled = false;
+                }
+            }
+        }
+
+        function goToStage3() {
+            document.getElementById('stage-2').classList.add('hidden-stage');
+            document.getElementById('stage-3').classList.remove('hidden-stage');
+            renderQuiz();
+        }
+
+        // STAGE 3: Quiz
+        const quizData = [
+            {
+                q: "1. Which Autobot represents your spirit?",
+                options: [
+                    "Optimus Prime — The wise and fearless leader",
+                    "Bumblebee — The fast, loyal, and energetic scout",
+                    "Ironhide — The tough, protective powerhouse"
+                ]
+            },
+            {
+                q: "2. Choose your Cybertronian vehicle mode:",
+                options: [
+                    "Heavy armored semi-truck",
+                    "High-speed sports interceptor",
+                    "Armored combat transport"
+                ]
+            },
+            {
+                q: "3. Pick your ultimate battle cry:",
+                options: [
+                    "Autobots, transform and roll out!",
+                    "Till all are one!",
+                    "One shall stand, one shall fall!"
+                ]
+            }
+        ];
+
+        let quizStep = 0;
+
+        function renderQuiz() {
+            const qObj = quizData[quizStep];
+            document.getElementById('quiz-question').innerText = qObj.q;
+            const optBox = document.getElementById('quiz-options');
+            optBox.innerHTML = '';
+
+            qObj.options.forEach((optText) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = optText;
+                btn.onclick = () => selectQuizOption();
+                optBox.appendChild(btn);
+            });
+        }
+
+        function selectQuizOption() {
+            playSound('chime');
+            quizStep++;
+            if (quizStep < quizData.length) {
+                renderQuiz();
+            } else {
+                document.getElementById('quiz-question').innerText = "SPARK CALIBRATION COMPLETE";
+                document.getElementById('quiz-options').innerHTML = `
+                    <div style="background:rgba(255,190,11,0.15); border:1px solid var(--gold); padding:20px; border-radius:8px;">
+                        <h3 style="color:var(--gold); font-family:'Orbitron';">DESIGNATION: PRIME CLASS</h3>
+                        <p style="margin-top:6px; opacity:0.9;">SUPREME AUTOBOT GUARDIAN // WISDOM & COURAGE VERIFIED</p>
+                        <button class="hud-btn" style="margin-top:15px;" onclick="goToStage4()">ENTER THE MATRIX CHAMBER</button>
+                    </div>
+                `;
+            }
+        }
+
+        function goToStage4() {
+            document.getElementById('stage-3').classList.add('hidden-stage');
+            document.getElementById('stage-4').classList.remove('hidden-stage');
+        }
+
+        // STAGE 4: Open Matrix
+        function openMatrix() {
+            playSound('door');
+            document.getElementById('stage-4').classList.add('hidden-stage');
+            document.getElementById('stage-5').classList.remove('hidden-stage');
+            speakText("I am Optimus Prime. Transmission verified. Welcome, brother. Till all are one.");
+        }
+
+        // STAGE 5: Voice, Card & Live Gemini AI Engine
+        let isCardFlipped = false;
+
+        function setOpticsTalking(speaking) {
+            const eyeL = document.getElementById('optics-l');
+            const eyeR = document.getElementById('optics-r');
+            if (speaking) {
+                eyeL.classList.add('speaking-optics');
+                eyeR.classList.add('speaking-optics');
+            } else {
+                eyeL.classList.remove('speaking-optics');
+                eyeR.classList.remove('speaking-optics');
+            }
+        }
+
+        function speakText(textToSpeak) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            const voices = window.speechSynthesis.getVoices();
+            const deepVoice = voices.find(v => (v.name.includes('David') || v.name.includes('Male') || v.name.includes('Daniel') || v.name.includes('Alex')) && v.lang.startsWith('en'));
+            if (deepVoice) utterance.voice = deepVoice;
+
+            utterance.pitch = 0.45;
+            utterance.rate = 0.8;
+            utterance.volume = 1;
+
+            utterance.onstart = () => setOpticsTalking(true);
+            utterance.onend = () => setOpticsTalking(false);
+            utterance.onerror = () => setOpticsTalking(false);
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function speakCurrentSide() {
+            if (!isCardFlipped) {
+                speakText("Twinkle, twinkle, little star. How I wonder what you are. Up above the world so high, like a diamond in the sky.");
+            } else {
+                speakText("Autobots, transform and roll out! Having you as my brother makes every journey and battle easier. Till all are one.");
+            }
+        }
+
+        function toggleCardFlip() {
+            isCardFlipped = !isCardFlipped;
+            document.getElementById('card-flipper').classList.toggle('flipped');
+            speakCurrentSide();
+        }
+
+        // ==========================================================
+        // LIVE GEMINI API INTEGRATION FUNCTION
+        // ==========================================================
+        async function sendAIQuery() {
+            const inputField = document.getElementById('ai-user-input');
+            const logBox = document.getElementById('ai-log');
+            const query = inputField.value.trim();
+            if (!query) return;
+
+            logBox.innerHTML += `\nYOU: ${query}`;
+            inputField.value = '';
+            logBox.scrollTop = logBox.scrollHeight;
+
+            logBox.innerHTML += `\nOPTIMUS: [Querying Matrix Databanks...]`;
+
+            try {
+                // PASTE YOUR GEMINI API KEY BETWEEN THE QUOTES BELOW:
+                const apiKey = "YOUR_GEMINI_API_KEY"; 
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: `You are Optimus Prime from Transformers. Speak with deep tactical authority, wisdom, and leadership, addressing the user as brother. Answer this question accurately and concisely in character: ${query}` }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                let aiReply = data.candidates[0].content.parts[0].text.trim();
+
+                logBox.innerHTML = logBox.innerHTML.replace(`\nOPTIMUS: [Querying Matrix Databanks...]`, `\nOPTIMUS: ${aiReply}`);
+                logBox.scrollTop = logBox.scrollHeight;
+                speakText(aiReply);
+
+            } catch (error) {
+                let errReply = "Comms network jammed across sector 7. Check your API key connection, brother.";
+                logBox.innerHTML = logBox.innerHTML.replace(`\nOPTIMUS: [Querying Matrix Databanks...]`, `\nOPTIMUS: ${errReply}`);
+                speakText(errReply);
+            }
+        }
+
+        function terminateTransmission() {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            document.getElementById('optimus-scene').classList.add('shutdown');
+            setTimeout(() => {
+                document.getElementById('stage-5').classList.add('hidden-stage');
+                document.getElementById('final-screen').classList.remove('hidden-stage');
+            }, 600);
+        }
+
+        // 3D Parallax Tilt
+        document.addEventListener('mousemove', (e) => {
+            const scene = document.getElementById('optimus-scene');
+            if (scene) {
+                const x = (window.innerWidth / 2 - e.pageX) / 45;
+                const y = (window.innerHeight / 2 - e.pageY) / 45;
+                scene.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+            }
+        });
+
+        // Ambient Sparks
+        const canvas = document.getElementById('spark-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 20;
+                this.speed = 0.7 + Math.random() * 1.5;
+                this.size = 1 + Math.random() * 2.5;
+                this.alpha = 0.2 + Math.random() * 0.7;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -10) { this.y = canvas.height + 10; this.x = Math.random() * canvas.width; }
+            }
+            draw() {
+                ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha})`;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+        for (let i = 0; i < 35; i++) particles.push(new Particle());
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.particles?.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
+</body>
+</html>
